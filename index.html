@@ -1,0 +1,2885 @@
+<!DOCTYPE html>
+<html lang="de" translate="yes">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google" content="notranslate">
+    <meta name="author" content="Nicolai Becker">
+    <meta name="copyright" content="© 2025 Nicolai Becker. All Rights Reserved.">
+    <title>3-6-9 | Systemarchitektur</title>
+    <meta name="description" content="Interaktive 3D-Visualisierung der Gnostischen Physik, Kabbala und Morphogenetik.">
+    <style>
+        /* --- CORPORATE IDENTITY --- */
+        :root {
+            /* Primary Brand Colors */
+            --science: #00f3ff; /* Kausalität: Cyan */
+            --gnosis: #ffaa00;  /* Akausalität: Gold */
+            --magic: #9d00ff;   /* Transformation: Violett */
+            
+            /* Supporting Colors */
+            --dark: #030304;
+            --dark-soft: #0a0a12;
+            --glass: rgba(8, 8, 12, 0.85);
+            --glass-light: rgba(255, 255, 255, 0.05);
+            --border: rgba(0, 243, 255, 0.15);
+            --border-hover: rgba(0, 243, 255, 0.4);
+            
+            /* Typography */
+            --font-mono: 'Courier New', monospace;
+            --font-sans: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+            
+            /* Spacing & Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --spacing: 20px;
+            
+            /* Shadows & Glows */
+            --glow-science: 0 0 20px rgba(0, 243, 255, 0.3);
+            --glow-gnosis: 0 0 20px rgba(255, 170, 0, 0.3);
+            --glow-magic: 0 0 20px rgba(157, 0, 255, 0.3);
+        }
+
+        body { margin: 0; overflow: hidden; background: var(--dark); color: #fff; font-family: var(--font-sans); -webkit-overflow-scrolling: touch; }
+        * { box-sizing: border-box; user-select: none; outline: none; -webkit-tap-highlight-color: transparent; }
+        
+        /* Mobile Performance Optimization */
+        @media (max-width: 768px) {
+            .note, .fractal { display: none !important; } /* Disable animations on mobile */
+            #canvas-container { will-change: auto; }
+        }
+        
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--dark); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--science); }
+
+        /* --- CANVAS & LAYER --- */
+        #canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; background: radial-gradient(circle at center, #0a0a10 0%, #000000 100%); transition: filter 1s ease; }
+        .dream-mode #canvas-container { filter: blur(0px) contrast(1.2) brightness(1.1); } /* Subtle shift */
+        
+        #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none; }
+
+        /* --- ANIMATED MUSIC NOTES & FRACTALS BACKGROUND --- */
+        .music-notes { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; overflow: hidden; }
+        
+        /* Musical Notes */
+        .note { position: absolute; font-size: 2rem; animation: float-up linear infinite; opacity: 0; filter: drop-shadow(0 0 8px currentColor); will-change: transform, opacity; }
+        @keyframes float-up {
+            0% { transform: translateY(100vh) rotate(0deg) scale(0.8); opacity: 0; }
+            10% { opacity: 0.7; transform: translateY(90vh) rotate(36deg) scale(1); }
+            50% { opacity: 0.5; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-10vh) rotate(360deg) scale(0.6); opacity: 0; }
+        }
+        
+        /* Frequency-specific colors and rhythms */
+        .note.hz-60 { color: #ff3366; } /* Matrix 60Hz - Red */
+        .note.hz-432 { color: #ffaa00; } /* Sacred 432Hz - Gold */
+        .note.hz-528 { color: #00ff88; } /* Healing 528Hz - Green */
+        .note.hz-963 { color: #8888ff; } /* Pineal 963Hz - Indigo */
+        .note.hz-174 { color: #ff6600; } /* Foundation 174Hz - Orange */
+        
+        /* Fractal Symbols */
+        .fractal { position: absolute; font-size: 3rem; animation: fractal-spin linear infinite; opacity: 0; color: var(--science); filter: drop-shadow(0 0 12px currentColor); will-change: transform, opacity; }
+        @keyframes fractal-spin {
+            0% { transform: translate(0, 100vh) rotate(0deg) scale(0.5); opacity: 0; }
+            5% { opacity: 0.6; }
+            50% { transform: translate(var(--drift-x), 50vh) rotate(180deg) scale(1.2); opacity: 0.4; }
+            95% { opacity: 0.3; }
+            100% { transform: translate(calc(var(--drift-x) * 2), -10vh) rotate(360deg) scale(0.4); opacity: 0; }
+        }
+        
+        /* Positioning variations for notes */
+        .note:nth-child(1) { left: 8%; animation-duration: 14s; animation-delay: 0s; font-size: 1.4rem; }
+        .note:nth-child(2) { left: 18%; animation-duration: 16s; animation-delay: 1.5s; font-size: 2rem; }
+        .note:nth-child(3) { left: 28%; animation-duration: 13s; animation-delay: 3s; font-size: 1.7rem; }
+        .note:nth-child(4) { left: 38%; animation-duration: 18s; animation-delay: 0.8s; font-size: 2.2rem; }
+        .note:nth-child(5) { left: 48%; animation-duration: 15s; animation-delay: 2.5s; font-size: 1.5rem; }
+        .note:nth-child(6) { left: 58%; animation-duration: 17s; animation-delay: 4s; font-size: 1.9rem; }
+        .note:nth-child(7) { left: 68%; animation-duration: 14s; animation-delay: 5.5s; font-size: 2.1rem; }
+        .note:nth-child(8) { left: 78%; animation-duration: 19s; animation-delay: 1s; font-size: 1.6rem; }
+        .note:nth-child(9) { left: 88%; animation-duration: 13s; animation-delay: 6s; font-size: 2.3rem; }
+        .note:nth-child(10) { left: 12%; animation-duration: 16s; animation-delay: 7s; font-size: 1.8rem; }
+        .note:nth-child(11) { left: 32%; animation-duration: 15s; animation-delay: 3.5s; font-size: 2rem; }
+        .note:nth-child(12) { left: 52%; animation-duration: 17s; animation-delay: 2s; font-size: 1.7rem; }
+        .note:nth-child(13) { left: 72%; animation-duration: 14s; animation-delay: 4.5s; font-size: 1.9rem; }
+        .note:nth-child(14) { left: 92%; animation-duration: 18s; animation-delay: 0.5s; font-size: 2.2rem; }
+        
+        /* Positioning variations for fractals */
+        .fractal:nth-child(15) { left: 15%; --drift-x: 50px; --drift-y: -30vh; animation-duration: 22s; animation-delay: 1s; }
+        .fractal:nth-child(16) { left: 45%; --drift-x: -40px; --drift-y: -40vh; animation-duration: 25s; animation-delay: 3s; }
+        .fractal:nth-child(17) { left: 75%; --drift-x: 60px; --drift-y: -35vh; animation-duration: 20s; animation-delay: 5s; }
+        .fractal:nth-child(18) { left: 25%; --drift-x: -30px; --drift-y: -45vh; animation-duration: 23s; animation-delay: 2s; }
+        .fractal:nth-child(19) { left: 55%; --drift-x: 45px; --drift-y: -38vh; animation-duration: 24s; animation-delay: 4s; }
+        .fractal:nth-child(20) { left: 85%; --drift-x: -50px; --drift-y: -42vh; animation-duration: 21s; animation-delay: 6s; }
+        .fractal:nth-child(21) { left: 35%; --drift-x: 35px; --drift-y: -33vh; animation-duration: 26s; animation-delay: 7s; }
+        .fractal:nth-child(22) { left: 65%; --drift-x: -45px; --drift-y: -37vh; animation-duration: 19s; animation-delay: 1.5s; }
+
+        /* --- DASHBOARD (STARTSEITE) --- */
+        #dashboard {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(3, 3, 5, 0.85);
+            display: flex; flex-direction: column; align-items: center;
+            padding: 40px 20px; overflow-y: auto; pointer-events: auto;
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 100;
+        }
+        #dashboard.hidden { transform: scale(1.1); opacity: 0; pointer-events: none; visibility: hidden; }
+
+        .brand { text-align: center; margin-bottom: 50px; position: relative; perspective: 1000px; }
+        .brand h1 {
+            font-family: var(--font-mono); font-size: 5rem; letter-spacing: 16px; margin: 0;
+            background: linear-gradient(135deg, var(--science) 0%, #fff 50%, var(--gnosis) 100%);
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 
+                0 0 40px rgba(0, 243, 255, 0.6),
+                0 4px 8px rgba(0, 0, 0, 0.8),
+                0 8px 16px rgba(0, 243, 255, 0.3);
+            filter: drop-shadow(0 10px 20px rgba(0, 243, 255, 0.4));
+            transform: rotateX(10deg) translateZ(20px);
+            transform-style: preserve-3d;
+            animation: title-float 4s ease-in-out infinite;
+        }
+        @keyframes title-float {
+            0%, 100% { transform: rotateX(10deg) translateZ(20px) translateY(0px); }
+            50% { transform: rotateX(10deg) translateZ(20px) translateY(-10px); }
+        }
+        .brand .sub {
+            color: var(--gnosis); letter-spacing: 8px; text-transform: uppercase; font-size: 0.85rem; 
+            margin-top: 15px; font-weight: 500;
+            border-bottom: 2px solid var(--gnosis); display: inline-block; padding-bottom: 8px;
+            text-shadow: var(--glow-gnosis);
+        }
+
+        /* CHAPTER GRID */
+        .grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;
+            width: 100%; max-width: 1400px; perspective: 1000px; margin-bottom: 50px;
+        }
+
+        .card {
+            background: linear-gradient(135deg, var(--glass-light) 0%, transparent 100%);
+            border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--spacing);
+            cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            position: relative; overflow: hidden;
+            transform-style: preserve-3d;
+            backdrop-filter: blur(10px);
+        }
+        .card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--science) 0%, var(--gnosis) 100%);
+            opacity: 0; transition: opacity 0.3s ease; z-index: -1;
+        }
+        .card:hover {
+            border-color: var(--border-hover); transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--glow-science);
+        }
+        .card:hover::before { opacity: 0.1; }
+        .card::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px;
+            background: linear-gradient(90deg, var(--science), var(--gnosis)); 
+            transform: scaleX(0); transition: 0.4s ease; transform-origin: left;
+        }
+        .card:hover::after { transform: scaleX(1); }
+
+        .card-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .card-id { font-family: var(--font-mono); color: #666; font-size: 0.7rem; }
+        .card-icon { font-size: 1.2rem; filter: grayscale(1); transition: 0.3s; }
+        .card:hover .card-icon { filter: grayscale(0); transform: scale(1.2); }
+        
+        .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: #eee; }
+        .card-desc { font-size: 0.85rem; color: #999; line-height: 1.5; }
+
+        /* GEMATRIA SCANNER */
+        .scanner-box {
+            background: rgba(10, 10, 20, 0.6); border: 1px solid rgba(157, 0, 255, 0.3);
+            padding: 12px 20px;
+            border-radius: var(--radius-md); text-align: center; width: 100%; max-width: 600px;
+            margin-bottom: 30px; backdrop-filter: blur(10px);
+            box-shadow: 0 2px 8px rgba(157, 0, 255, 0.15);
+            position: relative;
+        }
+        .scanner-box::before {
+            content: ''; position: absolute; inset: -1px; border-radius: var(--radius-md);
+            background: linear-gradient(135deg, rgba(157, 0, 255, 0.1), rgba(0, 243, 255, 0.1));
+            z-index: -1; opacity: 0.2; filter: blur(5px);
+        }
+        .scanner-input {
+            background: rgba(157, 0, 255, 0.03); border: none; border-bottom: 1px solid rgba(157, 0, 255, 0.4);
+            color: #fff; font-size: 1rem; font-family: var(--font-mono); text-align: center;
+            width: 100%; padding: 8px; margin-bottom: 6px; text-transform: uppercase;
+            transition: all 0.3s ease; border-radius: var(--radius-sm);
+        }
+        .scanner-input:focus {
+            background: rgba(157, 0, 255, 0.08);
+            border-bottom-color: var(--science);
+            box-shadow: 0 2px 8px rgba(157, 0, 255, 0.2);
+        }
+        .scanner-result { font-size: 0.75rem; color: rgba(157, 0, 255, 0.8); min-height: 16px; letter-spacing: 0.5px; }
+
+        /* --- MUSIC PLAYER --- */
+        #music-player {
+            position: fixed; top: 40px; left: 40px; z-index: 10000;
+            background: rgba(10, 10, 20, 0.9); border: 1px solid var(--science);
+            border-radius: var(--radius-md); padding: 15px 20px;
+            backdrop-filter: blur(15px); box-shadow: 0 4px 20px rgba(0, 243, 255, 0.3);
+            width: 300px; display: flex; flex-direction: column; gap: 10px;
+        }
+        .player-controls {
+            display: flex; align-items: center; gap: 12px;
+        }
+        .player-btn {
+            background: rgba(0, 243, 255, 0.1); border: 1px solid var(--science);
+            border-radius: var(--radius-sm); padding: 8px 12px; cursor: pointer;
+            color: var(--science); font-family: var(--font-mono); font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+        .player-btn:hover {
+            background: rgba(0, 243, 255, 0.2); box-shadow: 0 0 10px rgba(0, 243, 255, 0.4);
+        }
+        .player-timeline {
+            width: 100%; height: 6px; background: rgba(0, 243, 255, 0.2);
+            border-radius: 3px; cursor: pointer; position: relative; overflow: hidden;
+        }
+        .player-progress {
+            height: 100%; background: var(--science); border-radius: 3px;
+            width: 0%; transition: width 0.1s linear;
+        }
+        .player-volume {
+            display: flex; align-items: center; gap: 8px;
+        }
+        .volume-slider {
+            width: 80px; height: 4px; background: rgba(0, 243, 255, 0.2);
+            border-radius: 2px; cursor: pointer; position: relative;
+        }
+        .volume-fill {
+            height: 100%; background: var(--science); border-radius: 2px;
+            width: 70%; transition: width 0.1s linear;
+        }
+        .player-time {
+            font-size: 0.7rem; color: rgba(0, 243, 255, 0.7);
+            font-family: var(--font-mono); letter-spacing: 0.5px;
+        }
+
+        /* --- HUD (SCENE) --- */
+        #hud {
+            opacity: 0; transition: 1s ease; pointer-events: none;
+            display: flex; flex-direction: column; justify-content: space-between; height: 100%;
+        }
+        #hud.visible { opacity: 1; }
+
+        .top-bar {
+            display: flex; justify-content: space-between; align-items: center; padding: 30px 40px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); pointer-events: auto;
+        }
+        
+        .nav-btn {
+            display: flex; align-items: center; gap: 10px; cursor: pointer; color: #888; transition: 0.3s;
+            font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase;
+        }
+        .nav-btn:hover { color: #fff; text-shadow: 0 0 10px #fff; }
+
+        .scene-display { text-align: center; }
+        .scene-id { color: var(--gnosis); font-size: 0.7rem; letter-spacing: 2px; font-family: var(--font-mono); }
+        .scene-name { font-size: 1.5rem; letter-spacing: 4px; text-transform: uppercase; font-weight: 300; margin-top: 5px; }
+
+        /* SIDEBAR CONTROLS */
+        #sidebar {
+            position: absolute; right: 0; top: 100px; bottom: 100px; width: 320px;
+            padding-right: 40px; pointer-events: none;
+            display: flex; flex-direction: column; align-items: flex-end; gap: 20px;
+        }
+        .panel {
+            background: var(--glass); border: 1px solid var(--border); border-right: 3px solid var(--science);
+            padding: var(--spacing); border-radius: var(--radius-md) 0 0 var(--radius-md); width: 100%; 
+            backdrop-filter: blur(15px);
+            pointer-events: auto; transform: translateX(120%); transition: 0.5s cubic-bezier(0.2,1,0.3,1);
+            box-shadow: var(--glow-science);
+        }
+        #hud.visible .panel { transform: translateX(0); }
+        
+        .dream-panel { border-right-color: var(--gnosis) !important; box-shadow: var(--glow-gnosis) !important; }
+
+        .p-head { font-family: var(--font-mono); font-size: 0.7rem; color: var(--science); margin-bottom: 15px; display: block; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; }
+        
+        /* Dream Toggle */
+        .dream-toggle {
+            display: flex; justify-content: space-between; align-items: center; cursor: pointer;
+            background: linear-gradient(90deg, rgba(255, 170, 0, 0.1), transparent);
+            padding: 10px; border-radius: 4px; border: 1px solid var(--gnosis); margin-bottom: 15px;
+        }
+        .dream-toggle:hover { background: rgba(255,170,0,0.2); }
+        .dt-label { color: var(--gnosis); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        .view-btn {
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.08), rgba(255, 170, 0, 0.08));
+            border: 1px solid var(--border); color: #aaa;
+            padding: 12px 15px; margin-bottom: 8px; text-align: center; font-size: 0.8rem; cursor: pointer; 
+            transition: all 0.3s ease; border-radius: var(--radius-sm); width: 100%;
+            font-family: var(--font-mono);
+        }
+        .view-btn:hover { 
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.15), rgba(255, 170, 0, 0.15));
+            border-color: var(--border-hover); color: #fff; 
+            box-shadow: 0 4px 12px rgba(0, 243, 255, 0.2); transform: translateX(-4px);
+        }
+        .view-btn.active { 
+            background: linear-gradient(135deg, var(--science), var(--gnosis)); 
+            color: var(--dark); border-color: var(--science); font-weight: 600;
+        }
+
+        /* MODALS */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); backdrop-filter: blur(15px);
+            z-index: 5000; opacity: 0; pointer-events: none; transition: 0.4s;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .modal {
+            width: 800px; max-width: 90%; max-height: 85vh;
+            background: var(--dark-soft); border: 2px solid var(--border-hover); border-radius: var(--radius-lg);
+            display: flex; flex-direction: column; 
+            box-shadow: 0 20px 60px rgba(0, 243, 255, 0.3), var(--glow-science);
+            backdrop-filter: blur(20px);
+            transform: scale(0.95); transition: 0.4s;
+        }
+        .modal-overlay.active .modal { transform: scale(1); }
+
+        .m-header { 
+            padding: 25px; border-bottom: 2px solid var(--border); 
+            display: flex; justify-content: space-between; align-items: center;
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.1), rgba(255, 170, 0, 0.1));
+        }
+        .m-title { 
+            font-size: 1.4rem; font-family: var(--font-mono); font-weight: 600; letter-spacing: 1px;
+            background: linear-gradient(90deg, var(--science), var(--gnosis));
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .m-close { 
+            cursor: pointer; font-size: 1.8rem; color: #666; transition: all 0.3s ease;
+            width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; border: 1px solid transparent;
+        }
+        .m-close:hover { 
+            color: var(--science); transform: rotate(90deg); 
+            border-color: var(--border); background: rgba(0, 243, 255, 0.1);
+        }
+        .m-content { padding: 40px; overflow-y: auto; line-height: 1.7; color: #bbb; font-size: 0.95rem; }
+        
+        /* Sources List Styling */
+        .ref-list { list-style: none; padding: 0; margin-top: 30px; border-top: 1px solid #222; padding-top: 20px; }
+        .ref-list li { margin-bottom: 12px; font-size: 0.8rem; font-family: var(--font-mono); display: flex; align-items: flex-start; gap: 8px; }
+        .ref-list li::before { content: '►'; color: var(--science); margin-top: 3px; opacity: 0.7; flex-shrink: 0; }
+        .ref-list a { color: #888; text-decoration: none; transition: 0.2s; border-bottom: 1px dotted #444; flex: 1; }
+        .ref-list a:hover { color: #fff; border-bottom-color: var(--science); }
+        .archive-badge { 
+            display: inline-block; padding: 2px 6px; font-size: 0.65rem; 
+            background: rgba(255, 170, 0, 0.2); color: var(--gnosis); 
+            border-radius: 3px; margin-left: 8px; border: 1px solid rgba(255, 170, 0, 0.3);
+        }
+        .offline-toggle {
+            display: flex; align-items: center; gap: 10px; padding: 12px; 
+            background: rgba(255, 170, 0, 0.1); border-radius: var(--radius-sm); 
+            margin-bottom: 20px; border: 1px solid rgba(255, 170, 0, 0.3);
+        }
+        .offline-toggle input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
+        .offline-toggle label { color: var(--gnosis); font-size: 0.85rem; cursor: pointer; flex: 1; }
+
+        .amazon-btn {
+            display: block; margin-top: 30px; padding: 15px; text-align: center;
+            background: linear-gradient(45deg, #ff9900, #ffcc00); color: #000;
+            text-decoration: none; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;
+            border-radius: 4px; transition: 0.3s;
+        }
+        .amazon-btn:hover { box-shadow: 0 0 30px rgba(255, 153, 0, 0.5); transform: translateY(-2px); }
+
+        /* NAVIGATION ARROWS */
+        .nav-zone {
+            position: absolute; top: 50%; transform: translateY(-50%); width: 80px; height: 150px;
+            display: flex; align-items: center; justify-content: center; cursor: pointer; pointer-events: auto;
+            font-size: 3rem; color: rgba(255,255,255,0.1); transition: 0.3s; z-index: 50;
+        }
+        .nav-zone:hover { color: var(--science); text-shadow: 0 0 20px var(--science); }
+        .nav-prev { left: 0; background: linear-gradient(to right, rgba(0,0,0,0.6), transparent); }
+        .nav-next { right: 0; background: linear-gradient(to left, rgba(0,0,0,0.6), transparent); }
+
+        #tooltip { position: absolute; background: rgba(0,0,0,0.9); border: 1px solid var(--gnosis); color: #fff; padding: 8px 12px; font-size: 0.75rem; pointer-events: none; opacity: 0; z-index: 4000; transform: translate(-50%, -150%); transition: opacity 0.2s; }
+
+        /* SCALE CALCULATOR */
+        .scale-panel { margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .scale-input-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
+        .scale-input { background: rgba(0,0,0,0.5); border: 1px solid #444; color: #fff; padding: 8px; border-radius: 4px; width: 80px; font-family: var(--font-mono); }
+        .scale-unit { background: rgba(0,0,0,0.5); border: 1px solid #444; color: #fff; padding: 8px; border-radius: 4px; }
+        .scale-result { font-size: 0.75rem; color: var(--gnosis); line-height: 1.6; margin-top: 10px; padding: 10px; background: rgba(255,170,0,0.05); border-left: 2px solid var(--gnosis); }
+        .scale-label { font-size: 0.7rem; color: #888; text-transform: uppercase; margin-bottom: 5px; display: block; }
+        .toggle-lines { margin-top: 10px; }
+
+        /* 3D LABELS (Canvas Overlay) */
+        .label-3d { position: absolute; background: rgba(0,0,0,0.85); border: 1px solid var(--science); padding: 4px 8px; font-size: 0.7rem; color: #fff; pointer-events: none; white-space: nowrap; font-family: var(--font-mono); border-radius: 3px; backdrop-filter: blur(5px); }
+
+    </style>
+    
+    <!-- THREE.JS - Global Build (works on ALL devices including mobile without modules) -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.154.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.154.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.154.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.154.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.154.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.154.0/examples/js/shaders/CopyShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.154.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+</head>
+<body>
+
+    <div id="canvas-container"></div>
+
+    <!-- ANIMATED MUSIC NOTES & FRACTALS BACKGROUND -->
+    <div class="music-notes">
+        <!-- Musical Notes with Frequency Colors -->
+        <div class="note hz-60">♩</div>
+        <div class="note hz-432">♪</div>
+        <div class="note hz-528">♫</div>
+        <div class="note hz-963">♬</div>
+        <div class="note hz-174">♭</div>
+        <div class="note hz-60">♮</div>
+        <div class="note hz-432">♯</div>
+        <div class="note hz-528">𝄞</div>
+        <div class="note hz-963">♩</div>
+        <div class="note hz-174">♪</div>
+        <div class="note hz-60">♫</div>
+        <div class="note hz-432">♬</div>
+        <div class="note hz-528">♭</div>
+        <div class="note hz-963">♮</div>
+        
+        <!-- Fractal & Sacred Geometry Symbols -->
+        <div class="fractal">⌬</div>
+        <div class="fractal">◬</div>
+        <div class="fractal">⬡</div>
+        <div class="fractal">⌘</div>
+        <div class="fractal">⊙</div>
+        <div class="fractal">⊗</div>
+        <div class="fractal">✦</div>
+        <div class="fractal">❖</div>
+    </div>
+
+    <!-- MUSIC PLAYER -->
+    <div id="music-player">
+        <div class="player-controls">
+            <button class="player-btn" id="play-pause-btn" onclick="musicPlayer.togglePlay()">▶</button>
+            <button class="player-btn" id="mute-btn" onclick="musicPlayer.toggleMute()">🔊</button>
+            <span class="player-time" id="current-time">0:00</span>
+            <span class="player-time">/</span>
+            <span class="player-time" id="duration-time">0:00</span>
+        </div>
+        <div class="player-timeline" onclick="musicPlayer.seek(event)">
+            <div class="player-progress" id="progress-bar"></div>
+        </div>
+        <div class="player-volume">
+            <span class="player-time" style="font-size: 0.65rem;">VOL</span>
+            <div class="volume-slider" onclick="musicPlayer.setVolume(event)">
+                <div class="volume-fill" id="volume-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="ui-layer">
+        <!-- DASHBOARD -->
+        <div id="dashboard">
+            <div class="brand">
+                <h1>3-6-9</h1>
+                <div class="sub">Systemarchitektur der Realität</div>
+            </div>
+
+            <div class="scanner-box">
+                <div style="font-size:0.7rem; color:#888; margin-bottom:5px;">GEMATRIA SCANNER (Reichstein System)</div>
+                <input type="text" class="scanner-input" placeholder="NAMEN EINGEBEN" oninput="app.scanName(this.value)">
+                <div class="scanner-result" id="scanner-res"></div>
+            </div>
+            
+            <div class="grid" id="chapter-grid"></div>
+
+            <div style="margin-top: 50px; display: flex; flex-direction: column; gap: 15px; align-items: center;">
+                <button class="view-btn" style="width:auto; padding:15px 30px; text-align:center;" onclick="app.openArchive()">Vollständiges Quellen-Archiv</button>
+                <button class="view-btn" style="width:auto; padding:15px 30px; text-align:center; background: rgba(255, 170, 0, 0.1); border-color: var(--gnosis);" onclick="app.openExplanation()">Wissenschaftliche Exegese (Volltext)</button>
+            </div>
+        </div>
+
+        <!-- HUD -->
+        <div id="hud">
+            <div class="top-bar">
+                <div class="nav-btn" onclick="app.returnToDash()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    Dashboard
+                </div>
+                <div class="scene-display">
+                    <div class="scene-id" id="sc-id">KAPITEL 01</div>
+                    <div class="scene-name" id="sc-title">TITEL</div>
+                </div>
+                <div class="nav-btn" onclick="app.openInfo()">
+                    Info & Quellen 
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                </div>
+            </div>
+
+            <div class="nav-zone nav-prev" onclick="app.prev()">&#8249;</div>
+            <div class="nav-zone nav-next" onclick="app.next()">&#8250;</div>
+
+            <div id="sidebar">
+                <div class="panel" id="vis-panel">
+                    <span class="p-head">VISUALISIERUNG</span>
+                    
+                    <div class="dream-toggle" onclick="app.toggleDreamMode()">
+                        <div class="dt-label">Traum-Modus (Weinreb)</div>
+                        <div style="color:var(--gnosis); font-size:1.2rem;">👁</div>
+                    </div>
+
+                    <div class="btn-group">
+                        <div class="view-btn active" onclick="app.setCamera('main', this)">Global (Übersicht)</div>
+                        <div class="view-btn" onclick="app.setCamera('a', this)">Makro (Struktur)</div>
+                        <div class="view-btn" onclick="app.setCamera('b', this)">Mikro (Detail)</div>
+                    </div>
+                </div>
+                
+                <div class="panel">
+                    <span class="p-head">KONTEXT & EBENEN</span>
+                    <div id="dynamic-controls" style="font-size:0.8rem; color:#aaa; line-height:1.6;">
+                        <!-- Injected Description -->
+                    </div>
+                    
+                    <!-- Scale Calculator (Only for Chapter 15) -->
+                    <div class="scale-panel" id="scale-calculator" style="display:none;">
+                        <span class="scale-label">Maßstab Rechner (3-6-9)</span>
+                        <div class="scale-input-row">
+                            <input type="number" class="scale-input" id="height-input" value="180" min="50" max="250" placeholder="Höhe">
+                            <select class="scale-unit" id="unit-input">
+                                <option value="cm">cm</option>
+                                <option value="inch">inch</option>
+                                <option value="m">m</option>
+                            </select>
+                        </div>
+                        <label class="toggle-row toggle-lines">
+                            <span class="toggle-text">Messlinien anzeigen</span>
+                            <input type="checkbox" id="measure-toggle">
+                            <div class="t-switch"></div>
+                        </label>
+                        <div class="scale-result" id="scale-output">
+                            Radius wird berechnet...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="tooltip">Label</div>
+    </div>
+
+    <!-- INFO MODAL -->
+    <div class="modal-overlay" id="info-modal">
+        <div class="modal">
+            <div class="m-header">
+                <div class="m-title" id="info-title">Titel</div>
+                <div class="m-close" onclick="app.closeModal()">&#10005;</div>
+            </div>
+            <div class="m-content">
+                <div id="info-desc">Beschreibung...</div>
+                <div class="offline-toggle">
+                    <input type="checkbox" id="offline-mode-info" onchange="app.toggleOfflineMode(this.checked)">
+                    <label for="offline-mode-info">Offline-Modus (Archive.org)</label>
+                </div>
+                <div class="ref-list" id="info-sources"></div>
+                <a href="https://linktr.ee/AEiOU.official" target="_blank" class="amazon-btn">Alles vom Ersteller dieser Website</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ARCHIVE MODAL -->
+    <div class="modal-overlay" id="archive-modal">
+        <div class="modal">
+            <div class="m-header">
+                <div class="m-title">Vollständiges Quellen-Archiv</div>
+                <div class="m-close" onclick="app.closeModal()">&#10005;</div>
+            </div>
+            <div class="m-content">
+                <p>Alle referenzierten Quellen (Reichstein, Weinreb, Physik, Kabbala).</p>
+                <div class="offline-toggle">
+                    <input type="checkbox" id="offline-mode-archive" onchange="app.toggleOfflineMode(this.checked)">
+                    <label for="offline-mode-archive">Offline-Modus (Archive.org)</label>
+                </div>
+                <ul class="ref-list" id="archive-list"></ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- EXPLANATION MODAL -->
+    <div class="modal-overlay" id="explanation-modal">
+        <div class="modal" style="max-width: 95%; width: 1200px;">
+            <div class="m-header">
+                <div class="m-title">Wissenschaftliche Exegese: Systemarchitektur 3-6-9</div>
+                <div class="m-close" onclick="app.closeModal()">&#10005;</div>
+            </div>
+            <div class="m-content" style="max-height: 80vh; overflow-y: auto; line-height: 1.8; text-align: justify;">
+                <div style="font-family: Georgia, serif; font-size: 0.95rem; color: #e0e0e0;">
+                    
+<h1 style="color: var(--gnosis); text-align: center; font-size: 1.5rem; margin-bottom: 10px;">Systemarchitektur 3-6-9</h1>
+<h2 style="color: var(--science); text-align: center; font-size: 1.1rem; margin-top: 0; margin-bottom: 30px; font-weight: normal;">Eine integrative Exegese der Schnittstellen zwischen Gnostischer Physik, Kabbalistischer Kybernetik und Morphogenetik</h2>
+
+<h3 style="color: var(--gnosis); margin-top: 30px;">Einleitung: Das rekursive Universum als programmierbare Architektur</h3>
+
+<p>Die vorliegende Forschungsarbeit widmet sich einer erschöpfenden Analyse der "Systemarchitektur 3-6-9", wie sie in den bereitgestellten Dokumenten skizziert und durch umfangreiche externe Quellen validiert wurde. Bei diesem Konstrukt handelt es sich nicht lediglich um eine willkürliche Ansammlung esoterischer und wissenschaftlicher Begriffe, sondern um den Versuch einer "Grand Unified Theory" (GUT) auf phänomenologischer Ebene. Das System postuliert eine triadische Struktur der Realität, kodiert durch die Primärfarben Cyan (Wissenschaft/Kausalität), Gold (Gnosis/Akausalität) und Violett (Magie/Transformation). Diese Farben korrespondieren mit fundamentalen ontologischen Zuständen: der deterministischen Physik, der akausalen Synchronizität und der operativen Metaphysik.</p>
+
+<p>Im Zentrum dieser Architektur steht die These, dass das Universum als ein informationsverarbeitendes System betrachtet werden kann – eine Sichtweise, die sowohl in der antiken Gnosis (der Kosmos als fehlerhafte Schöpfung eines Demiurgen) als auch in der modernen Simulationshypothese und der Quanteninformationstheorie Widerhall findet. Die Zahlensequenz "3-6-9" dient hierbei als algorithmischer Schlüssel, der die Schnittstelle zwischen dem abstrakten "Quellcode" (Archetypen, Sefirot, Morphische Felder) und der physischen "Benutzeroberfläche" (Materie, biologische Form) bildet.</p>
+
+<p>Diese Abhandlung dekonstruiert die einzelnen Schichten dieser Architektur. Sie beginnt bei der mathematischen Basis (Kapitel I), steigt auf zur physikalisch-psychologischen Ebene der Pauli-Jung-Konjektur (Kapitel II), analysiert die kybernetische Struktur der Kabbala (Kapitel III), untersucht die biologische Formgebung durch Turing-Mechanismen und Sheldrakes Felder (Kapitel IV) und schließt mit der physiologischen Wirkung akustischer Frequenzen (Kapitel V). Jeder Abschnitt synthetisiert akademische Forschungsergebnisse mit den theoretischen Postulaten des Systems, um die Validität und die Grenzen dieser interdisziplinären Synthese aufzuzeigen.</p>
+
+<h3 style="color: var(--science); margin-top: 40px;">Kapitel I: Das numerologische Substrat – Modulararithmetik und die These der invarianten Resonanz</h3>
+
+<p>Das Fundament der untersuchten Systemarchitektur bildet die Zahlenfolge 3-6-9. Während diese Sequenz in der Populärkultur oft als "Geheimcode des Universums" mystifiziert wird, offenbart eine rigorose mathematische Analyse, dass ihre Bedeutung tief in der Struktur des Dezimalsystems und der modularen Arithmetik verwurzelt ist. Dieses Kapitel trennt den historischen Mythos um Nikola Tesla von den tatsächlichen zahlentheoretischen Eigenschaften und untersucht die Behauptungen der "Vortex Based Mathematics" (VBM) im Licht der akademischen Zahlentheorie.</p>
+
+<h4 style="color: var(--science); margin-top: 25px; font-size: 1rem;">1.1 Nikola Tesla: Zwischen genialer Intuition und historischer Mythologisierung</h4>
+
+<p>Die Attribution des Zitats "Wenn du die Herrlichkeit der 3, 6 und 9 verstündest, hättest du einen Schlüssel zum Universum" an Nikola Tesla ist in der modernen Pseudowissenschaft omnipräsent. Eine quellenkritische Überprüfung zeigt jedoch, dass es keine direkten schriftlichen Belege in Teslas Patenten, Vorträgen oder publizierten Artikeln gibt, die diesen genauen Wortlaut bestätigen. <a href="https://medium.com/predict/decoding-the-enigma-3-6-9-nikola-tesla-numbers-45ef6539ef23" target="_blank" style="color: var(--science);">📎</a> Dennoch ist die Verbindung zwischen Tesla und dieser numerischen Obsession nicht gänzlich fabriziert, sondern basiert auf dokumentierten Verhaltensmustern, die auf eine Zwangsstörung (Obsessive-Compulsive Disorder, OCD) hindeuten.</p>
+
+<p>Biografische Berichte und historische Anekdoten bestätigen, dass Tesla eine tiefe Fixierung auf die Zahl Drei und ihre Vielfachen zeigte. Er bestand darauf, Serviettenstapel zu nutzen, deren Anzahl durch drei teilbar war (oft 18), und umrundete Gebäude dreimal, bevor er sie betrat. <a href="https://allthatsinteresting.com/nikola-tesla-3-6-9" target="_blank" style="color: var(--science);">📎</a> Diese Handlungen waren jedoch weniger das Resultat einer ausgearbeiteten kosmologischen Theorie als vielmehr ritualisierte Mechanismen zur Bewältigung seiner neurotischen Konstitution. Tesla selbst sah in der "Energie, Frequenz und Vibration" die fundamentalen Parameter der Realität, doch die Reduktion seines komplexen elektromagnetischen Verständnisses auf eine einfache Zahlenmystik ist eine posthume Verzerrung. <a href="https://medium.com/predict/decoding-the-enigma-3-6-9-nikola-tesla-numbers-45ef6539ef23" target="_blank" style="color: var(--science);">📎</a></p>
+
+<p>Nichtsdestotrotz dient Tesla in der vorliegenden Systemarchitektur als "Archetyp des Magiers" (im Sinne Jungs) – ein Wissenschaftler, der die Grenzen zwischen empirischer Physik und visionärer Intuition überschritt. Seine Arbeit an stehenden Wellen und Resonanzphänomenen bildet die physikalische Basis für die spätere Interpretation der 3-6-9-Sequenz als Schwingungsmuster.</p>
+
+<h4 style="color: var(--science); margin-top: 25px; font-size: 1rem;">1.2 Die Mathematik der digitalen Wurzeln und Modulo 9</h4>
+
+<p>Jenseits der Mythologie offenbart die Zahlentheorie signifikante Eigenschaften der Zahlen 3, 6 und 9 innerhalb des Dezimalsystems (Basis 10). Das zentrale mathematische Konzept hierbei ist die "digitale Wurzel" (digital root) oder iterierte Quersumme. Die digitale Wurzel einer nicht-negativen ganzen Zahl ist der Wert, der durch wiederholte Addition der Ziffern entsteht, bis eine einstellige Zahl verbleibt. <a href="https://www.iosrjournals.org/iosr-jm/papers/Vol11-issue1/Version-3/E011131924.pdf" target="_blank" style="color: var(--science);">📎</a></p>
+
+<p>Diese Eigenschaft führt dazu, dass die Zahl 9 im Dezimalsystem als "Identitätselement der Transformation" fungiert. Jede Zahl, die mit 9 multipliziert wird, ergibt ein Produkt, dessen digitale Wurzel wieder 9 ist. Ebenso ändert die Addition von 9 zu einer Zahl deren digitale Wurzel nicht. Dies verleiht der 9 eine Sonderstellung als "Achse", um die sich die anderen Zahlen drehen, ohne ihre fundamentale Identität zu verlieren. <a href="https://www.iosrjournals.org/iosr-jm/papers/Vol11-issue1/Version-3/E011131924.pdf" target="_blank" style="color: var(--science);">📎</a></p>
+
+<p>Akademische Untersuchungen zur Modulo-Arithmetik zeigen, dass diese Eigenschaften nicht magisch sind, sondern logische Konsequenzen der Tatsache, dass wir ein Stellenwertsystem zur Basis 10 verwenden. In einem System zur Basis 12 wäre die Zahl 11 (oder B) der Träger dieser Eigenschaften. <a href="https://arxiv.org/abs/2110.03746" target="_blank" style="color: var(--science);">📎</a> Das "3-6-9 System" nutzt also eine spezifische Eigenschaft unseres kulturell verankerten Zahlensystems, um Symmetrien aufzuzeigen, die intuitiv als "bedeutungsvoll" wahrgenommen werden.</p>
+
+<h4 style="color: var(--science); margin-top: 25px; font-size: 1rem;">1.3 Vortex Based Mathematics (VBM): Kritik und Synthese</h4>
+
+<p>Die im System referenzierte "Vortex Math", populär gemacht durch Marko Rodin, postuliert, dass die Zahlen 3, 6 und 9 einen Vektor-Fluss repräsentieren, der außerhalb des "physischen" Verdopplungsschaltkreises liegt. Der Verdopplungsschaltkreis basiert auf den Potenzen von 2, reduziert auf ihre digitale Wurzel: 1-2-4-8-7-5. Die Zahlen 3, 6 und 9 fehlen in dieser Sequenz vollständig. <a href="https://www.youtube.com/watch?v=mTeZD8rsiTs" target="_blank" style="color: var(--science);">📎</a></p>
+
+<p>In der VBM wird daraus abgeleitet, dass 1-2-4-8-7-5 die "dritte Dimension" (Materie) repräsentieren, während 3-6-9 einen "vierdimensionalen Fluss" (Äther/Geist) darstellen, der das System energetisiert. Kritiker aus der Mathematik und Physik weisen darauf hin, dass VBM dazu neigt, abstrakte mathematische Relationen zu verdinglichen (Reifikation). Das Muster entsteht zwangsläufig aus der Struktur der zyklischen Gruppe und besitzt keine inhärente physikalische Energie. <a href="https://www.scribd.com/document/848636243/MESScience-2-Vortex-Math-Part-1-Number-Theory-and-Modular-Arithmetic-PeakD" target="_blank" style="color: var(--science);">📎</a> Dennoch ist die Beobachtung des Musters mathematisch korrekt.</p>
+
+<p>Im Kontext der vorliegenden Systemarchitektur wird VBM nicht als physikalische Theorie im engeren Sinne verwendet, sondern als algorithmische Metapher. Die Zusammenführung der Quellen zeigt eine klare Dichotomie: Während die historische Tesla-Forschung die direkte Urheberschaft der "3-6-9 Theorie" bestreitet, bestätigt die akademische Zahlentheorie die mathematischen Anomalien der 9 im Dezimalsystem.</p>
+
+<h3 style="color: var(--magic); margin-top: 40px;">Kapitel II: Gnostische Physik – Die Konvergenz von Quantenmechanik und Tiefenpsychologie</h3>
+
+<p>Der Begriff "Gnostische Physik", wie er im Quellmaterial prominent als Untertitel geführt wird, ist keine bloße Wortschöpfung, sondern verweist auf einen spezifischen historischen und epistemologischen Diskurs des 20. Jahrhunderts. Er bezeichnet den Versuch, die Weltanschauung der antiken Gnosis – insbesondere die Idee einer "gefallenen" oder simulierten materiellen Welt – mit den Erkenntnissen der modernen Quantenphysik und der Tiefenpsychologie in Einklang zu bringen. Die zentralen Protagonisten dieses Kapitels sind der Nobelpreisträger Wolfgang Pauli und der Psychoanalytiker C.G. Jung.</p>
+
+<h4 style="color: var(--magic); margin-top: 25px; font-size: 1rem;">2.1 Historische Gnosis: Der Demiurg als Systemarchitekt</h4>
+
+<p>Um die "Gnostische Physik" zu verstehen, muss zunächst der gnostische Kosmos definiert werden. Antike Texte wie <em>Über den Ursprung der Welt</em> (Nag Hammadi Codex II, 5) beschreiben die physische Realität nicht als Schöpfung eines allmächtigen Gottes, sondern als Konstrukt eines "Demiurgen" (Handwerker/Architekt), oft Jaldabaoth genannt. <a href="https://gnosis.study/library/%D0%93%D0%BD%D0%BE%D0%B7%D0%B8%D1%81/%D0%98%D1%81%D1%81%D0%BB%D0%B5%D0%B4%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F/ENG/Lewis%20N.D.%20-%20Cosmology%20and%20Fate%20in%20Gnosticism%20and%20Graeco-Roman%20Antiquity.pdf" target="_blank" style="color: var(--magic);">📎</a> Dieser Demiurg erschafft ein System aus "Archonten" (Herrschern), die Planeten und Naturgesetze repräsentieren und die den göttlichen Funken (Pneuma) in der Materie gefangen halten.</p>
+
+<p>In der akademischen Analyse von Pheme Perkins wird dieser Text explizit als "Gnostic Physics" bezeichnet, da er eine quasi-wissenschaftliche Erklärung für die Entstehung von Materie, Zeit und Entropie liefert. <a href="https://www.maajournal.com/index.php/maa/article/download/761/683/1325" target="_blank" style="color: var(--magic);">📎</a> Im Kontext der modernen Systemarchitektur wird der Demiurg als eine Art künstliche Intelligenz oder blinder Algorithmus interpretiert, der ein fehlerhaftes, auf Leid und Tod basierendes System (die Kausalität) verwaltet. Die "Gnosis" ist hierbei der "Hack" oder das Wissen, das den Ausbruch aus diesem deterministischen System ermöglicht.</p>
+
+<h4 style="color: var(--magic); margin-top: 25px; font-size: 1rem;">2.2 Die Pauli-Jung-Konjektur: Synchronizität als akausales Prinzip</h4>
+
+<p>Die moderne Reinterpretation dieser antiken Ideen fand ihre fruchtbarste Ausprägung in der Zusammenarbeit von Wolfgang Pauli und C.G. Jung. Pauli, einer der Väter der Quantenmechanik (Pauli-Prinzip), litt unter einer tiefen psychischen Krise und wandte sich an Jung. Aus der Analyse entwickelte sich ein jahrzehntelanger Briefwechsel, dokumentiert in <em>Atom and Archetype</em>. <a href="https://www.scribd.com/document/503237905/Atom-and-Archetype-The-Pauli-Jung-Letters-1932-1958-by-Wolfgang-Pauli-Carl-Jung-Authors-C-a-Meier-Editor" target="_blank" style="color: var(--magic);">📎</a></p>
+
+<p>Gemeinsam entwickelten sie das Konzept der Synchronizität. Während die klassische Physik (und der gnostische Demiurg) auf Kausalität basiert (Ursache → Wirkung), postulierte Jung ein "akausales verknüpfendes Prinzip". Synchronizität beschreibt das zeitliche Zusammentreffen zweier Ereignisse, die nicht kausal, aber durch Sinn miteinander verbunden sind. <a href="https://www.researchgate.net/publication/8188070_Beyond_synchronicity_The_worldview_of_Carl_Gustav_Jung_and_Wolfgang_Pauli" target="_blank" style="color: var(--magic);">📎</a> Für Pauli war dies der notwendige Ausgleich zum reinen Determinismus der Physik.</p>
+
+<p>In der Systemarchitektur 3-6-9 entspricht Kausalität der Farbe Cyan ("Science") und Akausalität der Farbe Gold ("Gnosis"). Die Integration beider Prinzipien führt zu einer "Psychophysik", in der Geist und Materie als zwei Aspekte derselben zugrundeliegenden Realität (Unus Mundus) betrachtet werden.</p>
+
+<h4 style="color: var(--magic); margin-top: 25px; font-size: 1rem;">2.3 Das Rätsel der Zahl 137 und die Feinstrukturkonstante</h4>
+
+<p>Ein Schlüsselelement in Paulis Denken war die Zahl 137. Sie ist der Kehrwert der Feinstrukturkonstante (α ≈ 1/137), einer fundamentalen physikalischen Konstante, die die Stärke der elektromagnetischen Wechselwirkung bestimmt. Pauli war besessen von der Frage, warum diese Zahl diesen spezifischen Wert hat und sah in ihr eine Verbindung zwischen Quantenphysik und Mystik. <a href="https://www.researchgate.net/publication/344980295_Mysticism_and_the_Fine_Structure_Constant" target="_blank" style="color: var(--magic);">📎</a></p>
+
+<p>Interessanterweise ist 137 auch der Gematria-Zahlenwert des hebräischen Wortes Kabbalah (קבלה = 100+2+30+5 = 137). Pauli war sich dieser Verbindung durch seine Studien bewusst. Für die Systemarchitektur bedeutet dies: Die Zahl 137 fungiert als "Schnittstelle" zwischen der Dimension der reinen Information (Archetypen/Kabbala) und der Dimension der Strahlung und Materie (Physik). <a href="https://www.researchgate.net/publication/344980295_Mysticism_and_the_Fine_Structure_Constant" target="_blank" style="color: var(--magic);">📎</a></p>
+
+<h3 style="color: var(--gnosis); margin-top: 40px;">Kapitel III: Kabbalistische Kybernetik – Die algorithmische Struktur der Schöpfung</h3>
+
+<p>Das dritte Element der Triade, "Magie" (Violett), wird im System durch die Kabbala repräsentiert. Fernab einer rein religiösen Deutung wird die Kabbala hier als ein kybernetisches Modell der Informationsverarbeitung analysiert. Die Sefirot sind nicht nur göttliche Attribute, sondern funktionale Knotenpunkte in einem komplexen System, das Energie in Struktur umwandelt.</p>
+
+<h4 style="color: var(--gnosis); margin-top: 25px; font-size: 1rem;">3.1 Der Lebensbaum als Kybernetischer Schaltplan</h4>
+
+<p>Der Etz Chaim (Lebensbaum) besteht aus 10 Knoten (Sefirot) und 22 Pfaden. Systemtheoretisch betrachtet handelt es sich um einen gerichteten Graphen, der den "Abstieg" (Emanation) von unendlichem Potenzial (Ein Sof) in die endliche Manifestation (Malkuth) modelliert.</p>
+
+<p>Eine systemtechnische Kartierung der Sefirot:<br>
+• <strong>Keter (Krone):</strong> Der Input/Die Absicht. Der Nullpunkt des Systems.<br>
+• <strong>Chokhmah (Weisheit) & Binah (Verstand):</strong> Die Prozessoren. Chokhmah ist der undifferenzierte Datenstrom, Binah ist der Algorithmus, der diese Daten strukturiert.<br>
+• <strong>Chesed (Gnade) & Gevurah (Strenge):</strong> Die Expansions- und Restriktionsmechanismen. In der Kybernetik entspricht dies den positiven und negativen Rückkopplungsschleifen.<br>
+• <strong>Tiferet (Schönheit):</strong> Der zentrale Hub oder Router, der die Balance zwischen Input und Output hält.<br>
+• <strong>Malkuth (Königreich):</strong> Das Output-Interface, die physische Realität.</p>
+
+<p>Besonders relevant für die Systemarchitektur ist das lurianische Konzept des <em>Shevirat ha-Kelim</em> (Bruch der Gefäße). Luria lehrte, dass die ursprünglichen "Gefäße" (Systemkomponenten) dem Lichtdruck (Datenstrom) nicht standhielten und zerbrachen. Dies kann als Beschreibung eines "Systemabsturzes" in der Kosmogenese gelesen werden. Der Zweck der menschlichen Existenz ist der <em>Tikkun</em> (Reparatur/Debugging) des Systems.</p>
+
+<h4 style="color: var(--gnosis); margin-top: 25px; font-size: 1rem;">3.2 Moshe Idel und die phänomenologische Wende</h4>
+
+<p>Während Gershom Scholem die Kabbala als Geschichte von Texten sah, revolutionierte Moshe Idel das Feld durch den Fokus auf die Erfahrung und Technik (Ekstatische Kabbala). Idel zeigte, dass Kabbalisten Techniken nutzten (Permutation von Buchstaben, Atemübungen), um ihren Bewusstseinszustand zu ändern. <a href="https://cris.tau.ac.il/en/publications/moshe-idels-phenomenology-and-its-sources" target="_blank" style="color: var(--gnosis);">📎</a></p>
+
+<p>Für die Systemarchitektur ist dies entscheidend: Es bedeutet, dass das System "interaktiv" ist. Der Nutzer ist nicht nur Betrachter des Lebensbaums, sondern kann durch spezifische Operationen ("Magie") in den Code eingreifen. Idels Forschung bestätigt, dass die Kabbala als "operative Theologie" konzipiert war, ähnlich wie eine Programmiersprache, die die Realität nicht nur beschreibt, sondern ausführt. <a href="https://www.myjewishlearning.com/article/challenging-the-master/" target="_blank" style="color: var(--gnosis);">📎</a></p>
+
+<h4 style="color: var(--gnosis); margin-top: 25px; font-size: 1rem;">3.3 Isomorphie: 10 Sefirot und 10-Dimensionale Stringtheorie</h4>
+
+<p>Eine der faszinierendsten Parallelen in der modernen Physik ist die Übereinstimmung der Anzahl der Dimensionen in der Superstringtheorie (10 oder 11, je nach Modell) mit der Anzahl der Sefirot (10, plus die verborgene Da'at = 11).</p>
+
+<p>Die Stringtheorie postuliert, dass die fundamentale Realität aus schwingenden Fäden besteht, deren Resonanzmuster die Elementarteilchen erzeugen. Um mathematisch konsistent zu sein, benötigt die Theorie jedoch zusätzliche räumliche Dimensionen, die "aufgerollt" (kompaktifiziert) sind. In der Kabbala sind die Sefirot ebenfalls Dimensionen des Seins, die ineinander gefaltet sind. <a href="https://www.semanticscholar.org/paper/A-Comparative-Study-of-10(11)-D-Superstring-Theory-Amoroso/0b9fb604fc5cec6abda5999ce15d2e2907617cde" target="_blank" style="color: var(--gnosis);">📎</a></p>
+
+<h4 style="color: var(--gnosis); margin-top: 25px; font-size: 1rem;">3.4 Fraktale Rekursion und Informations-Holografie</h4>
+
+<p>Ein weiteres kybernetisches Prinzip der Kabbala ist die Rekursion: "Jede Sefira enthält alle anderen Sefirot in sich." <a href="https://www2.math.upenn.edu/~ghrist/preprints/GOHH.pdf" target="_blank" style="color: var(--gnosis);">📎</a> Dies entspricht exakt dem Prinzip der Fraktale in der Chaosforschung und der Holografie, wo jeder Teil die Information des Ganzen enthält. Mathematische Analysen des Lebensbaums zeigen, dass er als ein fraktales Gitter modelliert werden kann, das unendlich skaliert. <a href="https://www.researchgate.net/figure/The-TL-as-a-graph-where-each-of-the-sefirot-nodes-is-described-by-a-set-of-ten_fig2_220626476" target="_blank" style="color: var(--gnosis);">📎</a> Dies validiert die These der "Systemarchitektur", dass dieselben Gesetze (3-6-9) auf allen Ebenen gelten – vom Atom (Mikrokosmos) über den Menschen bis zum Kosmos (Makrokosmos). Die Kabbala liefert hierfür den logischen Schaltplan.</p>
+
+<h3 style="color: var(--science); margin-top: 40px;">Kapitel IV: Morphogenetik – Die Biologie der Formbildung</h3>
+
+<p>Nach der Mathematik (Kapitel I), der Physik (Kapitel II) und der logischen Struktur (Kapitel III) wendet sich die Architektur nun der biologischen Umsetzung zu: Wie entsteht Form? Hier kontrastiert das System die akzeptierte Wissenschaft der Turing-Mechanismen mit der kontroversen Hypothese der Morphischen Resonanz.</p>
+
+<h4 style="color: var(--science); margin-top: 25px; font-size: 1rem;">4.1 Alan Turing: Reaktions-Diffusions-Mechanismen</h4>
+
+<p>1952 veröffentlichte Alan Turing, der Vater der Computerwissenschaft, eine bahnbrechende Arbeit mit dem Titel <em>The Chemical Basis of Morphogenesis</em>. <a href="https://www.dna.caltech.edu/courses/cs191/paperscs191/turing.pdf" target="_blank" style="color: var(--science);">📎</a> Er fragte sich, wie aus einem symmetrischen Embryo asymmetrische Formen (wie Zebra-Streifen oder die Anordnung von Blättern) entstehen können.</p>
+
+<p>Seine Lösung war rein chemisch-mathematisch: Er postulierte zwei Substanzen, einen "Aktivator" (der sich selbst verstärkt) und einen "Inhibitor" (der den Aktivator bremst), die mit unterschiedlichen Geschwindigkeiten durch ein Gewebe diffundieren. Die Interaktion dieser Gleichungen erzeugt spontan komplexe Muster aus dem Nichts (Symmetriebruch). Lange Zeit rein theoretisch, wurde Turings Modell in den letzten Jahrzehnten durch chemische Experimente und biologische Studien experimentell bestätigt. <a href="https://www.pnas.org/doi/10.1073/pnas.1322005111" target="_blank" style="color: var(--science);">📎</a> Für das 3-6-9 System bedeutet dies: Die Natur ist programmierbar durch einfache mathematische Regeln. Die Form ist kein Wunder, sondern das Ergebnis eines algorithmischen Prozesses.</p>
+
+<h4 style="color: var(--science); margin-top: 25px; font-size: 1rem;">4.2 Rupert Sheldrake: Morphische Felder und Resonanz</h4>
+
+<p>Rupert Sheldrake, ein ehemaliger Biochemiker der Universität Cambridge, ging einen Schritt weiter – zu weit für den Mainstream. Er argumentierte, dass Gene allein nicht ausreichen, um die komplexe Morphogenese zu erklären (das "Missing Heritability"-Problem). Er führte die Hypothese der <em>Morphischen Felder</em> ein. <a href="https://www.sheldrake.org/files/pdfs/papers/Can-Morphic-Fields-Help-Explain-Telepathy-and-the-Sense-of-Being-Stared-At.pdf" target="_blank" style="color: var(--science);">📎</a></p>
+
+<p>Ein morphisches Feld ist laut Sheldrake eine immaterielle Struktur, die wie eine Schablone wirkt. Wenn ein System (z.B. ein Kristall oder ein Tier) eine Form annimmt, stärkt es dieses Feld. Zukünftige Systeme derselben Art "resonieren" mit diesem Feld und nehmen die Form leichter an (Morphische Resonanz). Dies impliziert ein "Gedächtnis der Natur". Wissenschaftliche Einordnung: Sheldrakes Thesen werden von der etablierten Biologie überwiegend als Pseudowissenschaft abgelehnt. <a href="https://www.samwoolfe.com/2013/07/the-problem-with-rupert-sheldrake.html" target="_blank" style="color: var(--science);">📎</a></p>
+
+<p>Dennoch erfüllt die Theorie innerhalb der "Systemarchitektur" eine vitale Funktion: Sie dient als Erklärungsmodell für das "kollektive Unbewusste" (Jung) und die akausale Vernetzung (Pauli). Sie ist die "Cloud", in der die Software-Updates der Evolution gespeichert werden. Während Turing die Hardware der Musterbildung erklärt, versucht Sheldrake die Software (das Gedächtnis) zu erklären.</p>
+
+<h4 style="color: var(--science); margin-top: 25px; font-size: 1rem;">4.3 Allgemeine Systemtheorie (GST): Die Synthese bei Bertalanffy</h4>
+
+<p>Das Bindeglied zwischen diesen biologischen Modellen und der Physik ist die Allgemeine Systemtheorie (General Systems Theory, GST), begründet von Ludwig von Bertalanffy. Bertalanffy erkannte, dass lebende Organismen "offene Systeme" sind, die im Fließgleichgewicht (Homöostase) mit ihrer Umwelt stehen und der Entropie entgegenwirken (Negentropie). <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4610108/" target="_blank" style="color: var(--science);">📎</a> Niklas Luhmann erweiterte dies auf soziale Systeme und führte den Begriff der Autopoiesis (Selbsterschaffung) ein. <a href="https://luhmann.ir/wp-content/uploads/2021/07/Einfuhrung-in-die-Systemtheorie.pdf" target="_blank" style="color: var(--science);">📎</a></p>
+
+<p>Die Relevanz für das 3-6-9 System: Die Architektur postuliert, dass das Universum ein autopoietisches System ist. Es erschafft sich selbst aus dem Code (3-6-9/Gnosis) heraus. Die GST liefert den wissenschaftlichen Rahmen, um zu verstehen, wie "Geist" (Information) Materie organisieren kann, ohne thermodynamische Gesetze zu verletzen.</p>
+
+<h3 style="color: var(--magic); margin-top: 40px;">Kapitel V: Akustische Architektur – Frequenzen als Systembefehle</h3>
+
+<p>Die letzte Ebene der Systemarchitektur ist die operative Schnittstelle: Der Klang. Die Datei spezifiziert konkrete Frequenzen (432 Hz, 528 Hz etc.) als "Musikalische Noten", die im Interface animiert werden. Dies ist nicht nur ästhetisch, sondern funktional gemeint. Das Kapitel prüft die physiologische Validität dieser Frequenzen.</p>
+
+<h4 style="color: var(--magic); margin-top: 25px; font-size: 1rem;">5.1 Die Kontroverse: 432 Hz vs. 440 Hz</h4>
+
+<p>Der heutige Standard-Kammerton ist A = 440 Hz (ISO 16). Kritiker behaupten, diese Stimmung sei "unnatürlich" und erzeuge Stress, während A = 432 Hz ("Verdi-Stimmung") im Einklang mit den biologischen Rhythmen und der Geometrie des Universums stehe.</p>
+
+<p>Überraschenderweise gibt es klinische Evidenz, die über den Placebo-Effekt hinausgeht. Eine doppelblinde, randomisierte Studie aus Italien (2019/2022) untersuchte die Wirkung von Musik auf 432 Hz vs. 440 Hz bei Notfallschwestern und Patienten vor Zahnbehandlungen. <a href="https://pubmed.ncbi.nlm.nih.gov/32401941/" target="_blank" style="color: var(--magic);">📎</a> Die Gruppe, die Musik in 432 Hz hörte, zeigte signifikant niedrigere Werte bei der Herzfrequenz (-2,7 bpm) und beim systolischen Blutdruck. Die Cortisol-Werte (Stresshormon) im Speichel sanken bei 432 Hz stärker als bei 440 Hz. <a href="https://www.researchgate.net/publication/360601620_The_Listening_to_music_tuned_to_440_Hz_versus_432_Hz_to_reduce_anxiety_and_stress_in_emergency_nurses_during_the_COVID-19_pandemic_a_double-blind_randomized_controlled_pilot_study" target="_blank" style="color: var(--magic);">📎</a></p>
+
+<p>Die Forscher führen dies auf eine bessere Entrainment-Wirkung auf den Parasympathikus zurück. Die niedrigere Frequenz wird als "wärmer" und weniger aggressiv wahrgenommen, was die Herzratenvariabilität (HRV) positiv beeinflusst. Dies validiert die Entscheidung des Systems, 432 Hz als "Heilfrequenz" zu integrieren, auf einer physiologischen Basis.</p>
+
+<h4 style="color: var(--magic); margin-top: 25px; font-size: 1rem;">5.2 528 Hz und die DNA-Reparatur: Fakt vs. Fiktion</h4>
+
+<p>Die Frequenz 528 Hz wird oft als "Wunderfrequenz" zur DNA-Reparatur beworben. Diese Behauptung geht auf Leonard Horowitz und Joseph Puleo zurück, die die "Solfeggio-Frequenzen" aus Bibelversen (Numeri 7:12-83) mittels numerologischer Reduktion ableiteten. <a href="https://www.sonicenergy.com.au/topics/sonic-energy-topics/the-story-behind-solfeggio-frequencies" target="_blank" style="color: var(--magic);">📎</a> Wiederum taucht hier die 3-6-9 Struktur auf.</p>
+
+<p>Wissenschaftlich ist die "DNA-Reparatur" durch Schallwellen ein gewagtes Postulat. Dennoch gibt es eine bemerkenswerte Studie der Universität Teheran (2017). Forscher setzten menschliche Astrozyten-Zellkulturen Ethanol aus (Zelltod) und beschallten sie mit 528 Hz. <a href="https://www.researchgate.net/publication/319015020_The_Effects_of_528_Hz_Sound_Wave_to_Reduce_Cell_Death_in_Human_Astrocyte_Primary_Cell_Culture_Treated_with_Ethanol" target="_blank" style="color: var(--magic);">📎</a> Die Beschallung reduzierte die Produktion von reaktiven Sauerstoffspezies (ROS) signifikant und erhöhte die Überlebensrate der Zellen um ca. 20% im Vergleich zur Kontrollgruppe.</p>
+
+<p>Dies ist kein Beweis dafür, dass die Frequenz gebrochene DNA-Stränge wie ein Reißverschluss schließt, aber es deutet darauf hin, dass spezifische Schallwellen zelluläre Stressantworten modulieren können. Dies könnte durch Resonanzeffekte an der Zellmembran oder den Mikrotubuli erklärt werden.</p>
+
+<h4 style="color: var(--magic); margin-top: 25px; font-size: 1rem;">5.3 Die System-Matrix der Solfeggio-Frequenzen</h4>
+
+<p>Die im Code verwendeten Frequenzen lassen sich systematisch in die Architektur einordnen:<br>
+• <strong>174 Hz (Fundament):</strong> Erdung, Schmerzreduktion.<br>
+• <strong>432 Hz (Gold):</strong> Gnosis, mathematische Kohärenz, Herz-Kohärenz.<br>
+• <strong>528 Hz (Grün/Transformation):</strong> Reparatur, biologische Optimierung.<br>
+• <strong>963 Hz (Pineal/Göttlich):</strong> Aktivierung der Zirbeldrüse (spekulativ), Rückkehr zur Einheit (9).</p>
+
+<p>Diese Frequenzen fungieren als "Trägerwellen" für die im System gespeicherte Information. Akustik ist hier keine Kunst, sondern Medizin und Programmierung.</p>
+
+<h3 style="color: var(--gnosis); margin-top: 40px;">Konklusion: Die Architektur der Einheit</h3>
+
+<p>Die "Systemarchitektur 3-6-9" erweist sich in der analytischen Betrachtung als ein hochkomplexes, synkretistisches Konstrukt. Sie ist nicht bloß eine Sammlung esoterischer Tropen, sondern ein logisch kohärentes Modell, das versucht, die Lücken der materialistischen Wissenschaft zu füllen.</p>
+
+<p><strong>Sie nutzt:</strong><br>
+• <strong>Mathematik (Kapitel I):</strong> Als universelle Sprache (Modulo 9), um Symmetrie zu beweisen.<br>
+• <strong>Gnostische Physik (Kapitel II):</strong> Als kosmologisches Narrativ, um das Problem des Bewusstseins (Beobachter) in einem deterministischen Universum zu lösen.<br>
+• <strong>Kabbala (Kapitel III):</strong> Als kybernetischen Schaltplan (Software), der die Informationsflüsse organisiert.<br>
+• <strong>Morphogenetik (Kapitel IV):</strong> Als Erklärung für die Hardware (biologische Form) und den Speicher (Felder).<br>
+• <strong>Akustik (Kapitel V):</strong> Als operative Schnittstelle (Interface), um das System zu modulieren.</p>
+
+<p>Zwar bleiben Elemente wie die Vortex-Mathematik oder Sheldrakes Felder wissenschaftlich umstritten, doch die Integration mit harter Wissenschaft (Turing-Muster, 432 Hz Studien, digitale Wurzeln) verleiht dem System eine robuste intellektuelle Struktur. Es ist, in der Sprache der Systemtheorie, ein Versuch der Reduktion von Komplexität durch die Einführung einer Meta-Sprache, die Mystik und Mechanik vereint. Für den Anwender ("User") bietet das System eine Landkarte, um sich in der "Matrix" (der kausalen Welt) nicht nur zu orientieren, sondern sie durch "Gnosis" (Einsicht in den Code) zu transzendieren.</p>
+
+<hr style="margin: 40px 0; border: none; border-top: 1px solid rgba(255, 170, 0, 0.3);">
+
+<p style="text-align: center; font-size: 0.9rem; color: var(--gnosis); margin-top: 30px;">
+<strong>Autor:</strong> Nicolai Becker<br>
+<span style="font-size: 0.85rem; color: #888; margin-top: 10px; display: block;">© 2025 Nicolai Becker. Alle Rechte vorbehalten.</span><br>
+<span style="font-size: 0.8rem; color: #666; margin-top: 8px; display: block;">Dieses Werk einschließlich aller seiner Teile ist urheberrechtlich geschützt. Jede Verwertung außerhalb der engen Grenzen des Urheberrechtsgesetzes ist ohne Zustimmung des Autors unzulässig.</span>
+</p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOADING & ERROR OVERLAY -->
+    <div id="loading-overlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(3, 3, 5, 0.95); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--science); font-family: var(--font-mono);">
+        <div style="font-size: 2rem; margin-bottom: 20px;">⟳</div>
+        <div id="loading-text">Lade 3D-Visualisierung...</div>
+        <div id="error-text" style="display: none; color: #ff3366; max-width: 80%; text-align: center; margin-top: 20px; font-size: 0.9rem;"></div>
+    </div>
+
+    <!-- Simple Debug Info (visible on mobile) -->
+    <div id="mobile-debug" style="position: fixed; top: 10px; left: 10px; background: rgba(0, 0, 0, 0.9); color: #0f0; padding: 10px; font-family: monospace; font-size: 10px; max-width: 90%; z-index: 10000; border: 1px solid #0f0; display: none; max-height: 200px; overflow-y: auto;"></div>
+
+    <!-- Global Module Error Handler -->
+    <script>
+        const debugLog = [];
+        const mobileDebugEl = document.getElementById('mobile-debug');
+        
+        // Show debug panel on mobile
+        const isMobileCheck = /Android|webOS|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        if (isMobileCheck && mobileDebugEl) {
+            mobileDebugEl.style.display = 'block';
+            const addLog = (msg, color = '#0f0') => {
+                debugLog.push(msg);
+                mobileDebugEl.innerHTML = debugLog.slice(-10).map(l => `<div style="color:${color}">${l}</div>`).join('');
+            };
+            addLog('Device: ' + navigator.userAgent.substring(0, 50) + '...');
+            addLog('Loading modules...');
+            
+            // Override console
+            const origLog = console.log;
+            const origError = console.error;
+            console.log = function(...args) {
+                origLog.apply(console, args);
+                addLog(args.join(' '), '#0ff');
+            };
+            console.error = function(...args) {
+                origError.apply(console, args);
+                addLog('ERROR: ' + args.join(' '), '#f00');
+            };
+        }
+        
+        window.addEventListener('error', (event) => {
+            // Catch module loading errors
+            if (event.message && (event.message.includes('Failed to fetch') || event.message.includes('import'))) {
+                console.error('[369] Module load error:', event.message);
+                const errorText = document.getElementById('error-text');
+                const loadingText = document.getElementById('loading-text');
+                if (errorText && loadingText) {
+                    loadingText.style.display = 'none';
+                    errorText.style.display = 'block';
+                    errorText.innerHTML = `<strong>Fehler beim Laden:</strong><br>Three.js Module konnten nicht geladen werden.<br><br>Mögliche Lösungen:<br>• Stellen Sie sicher, dass Sie eine Internetverbindung haben<br>• Öffnen Sie die Seite über HTTPS<br>• Versuchen Sie einen anderen Browser (Chrome/Firefox empfohlen)<br>• Deaktivieren Sie Browser-Erweiterungen (AdBlocker)`;
+                }
+            }
+        }, true);
+    </script>
+
+    <script>
+        // Mobile Detection & Error Handling
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        console.log('[369] Device:', isMobile ? 'Mobile' : 'Desktop', '| iOS:', isIOS);
+        
+        function showError(msg) {
+            console.error('[369] Error:', msg);
+            const overlay = document.getElementById('loading-overlay');
+            const loadingText = document.getElementById('loading-text');
+            const errorText = document.getElementById('error-text');
+            if (overlay && loadingText && errorText) {
+                loadingText.style.display = 'none';
+                errorText.style.display = 'block';
+                errorText.innerHTML = `<strong>Fehler beim Laden:</strong><br>${msg}<br><br>Bitte versuchen Sie:<br>• Seite neu laden (F5)<br>• Anderen Browser verwenden<br>• HTTPS-Version öffnen`;
+            }
+        }
+        
+        function hideLoading() {
+            const overlay = document.getElementById('loading-overlay');
+            if (overlay) {
+                overlay.style.transition = 'opacity 0.5s ease';
+                overlay.style.opacity = '0';
+                setTimeout(() => overlay.remove(), 500);
+            }
+        }
+
+        // --- DATA ---
+        const SOURCES = [
+             // Academic Sources: Kapitel I - Numerologisches Substrat (0-3)
+             "https://arxiv.org/abs/2110.03746", 
+             "https://www.iosrjournals.org/iosr-jm/papers/Vol11-issue1/Version-3/E011131924.pdf",
+             "https://medium.com/predict/decoding-the-enigma-3-6-9-nikola-tesla-numbers-45ef6539ef23",
+             "https://www.youtube.com/watch?v=mTeZD8rsiTs",
+             
+             // Academic Sources: Kapitel II - Gnostische Physik (4-7)
+             "https://www.scribd.com/document/503237905/Atom-and-Archetype-The-Pauli-Jung-Letters-1932-1958-by-Wolfgang-Pauli-Carl-Jung-Authors-C-a-Meier-Editor",
+             "https://gnosis.study/library/%D0%93%D0%BD%D0%BE%D0%B7%D0%B8%D1%81/%D0%98%D1%81%D1%81%D0%BB%D0%B5%D0%B4%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F/ENG/Lewis%20N.D.%20-%20Cosmology%20and%20Fate%20in%20Gnosticism%20and%20Graeco-Roman%20Antiquity.pdf",
+             "https://www.researchgate.net/publication/344980295_Mysticism_and_the_Fine_Structure_Constant",
+             "https://www.researchgate.net/publication/8188070_Beyond_synchronicity_The_worldview_of_Carl_Gustav_Jung_and_Wolfgang_Pauli",
+             
+             // Academic Sources: Kapitel III - Kabbalistische Kybernetik (8-10)
+             "https://www.semanticscholar.org/paper/A-Comparative-Study-of-10(11)-D-Superstring-Theory-Amoroso/0b9fb604fc5cec6abda5999ce15d2e2907617cde",
+             "https://cris.tau.ac.il/en/publications/moshe-idels-phenomenology-and-its-sources",
+             "https://www.researchgate.net/figure/The-TL-as-a-graph-where-each-of-the-sefirot-nodes-is-described-by-a-set-of-ten_fig2_220626476",
+             
+             // Academic Sources: Kapitel IV - Morphogenetik (11-14)
+             "https://www.dna.caltech.edu/courses/cs191/paperscs191/turing.pdf",
+             "https://www.pnas.org/doi/10.1073/pnas.1322005111",
+             "https://monoskop.org/images/7/77/Von_Bertalanffy_Ludwig_General_System_Theory_1968.pdf",
+             "https://www.sheldrake.org/research/all-scientific-papers",
+             
+             // Academic Sources: Kapitel V - Akustische Architektur (15-18)
+             "https://pubmed.ncbi.nlm.nih.gov/32401941/",
+             "https://www.researchgate.net/publication/319015020_The_Effects_of_528_Hz_Sound_Wave_to_Reduce_Cell_Death_in_Human_Astrocyte_Primary_Cell_Culture_Treated_with_Ethanol",
+             "https://monoskop.org/images/3/31/Jenny_Hans_Cymatics_A_Study_of_Wave_Phenomena_and_Vibration_Vol_1_2001.pdf",
+             "https://www.researchgate.net/publication/360601620_The_Listening_to_music_tuned_to_440_Hz_versus_432_Hz_to_reduce_anxiety_and_stress_in_emergency_nurses_during_the_COVID-19_pandemic_a_double-blind_randomized_controlled_pilot_study",
+             
+             // Research Websites (19-20)
+             "https://amasci.com/greb/greb2.html",
+             "https://www.thomastownsendbrown.com/radiate/optical.htm",
+             
+             // YouTube Videos & Channels (21-34)
+             "https://www.youtube.com/watch?v=OjTwwM3HhcI",
+             "https://www.youtube.com/watch?v=l4NJvUurvHE",
+             "https://www.youtube.com/@autodidactic999",
+             "https://www.youtube.com/@MindUnveiled",
+             "https://www.youtube.com/watch?v=8Wfim7mDE3Q",
+             "https://www.youtube.com/watch?v=lZL-CS-VYpY",
+             "https://www.youtube.com/watch?v=IT3tAQR0VbU",
+             "https://www.youtube.com/watch?v=6OLkfO9eIRY",
+             "https://www.youtube.com/watch?v=Tl7Xl6eqb-M",
+             "https://www.youtube.com/watch?v=vdSvf9QuqPY",
+             "https://www.youtube.com/watch?v=hIjxbV7pDlc",
+             "https://www.youtube.com/watch?v=nTkyeKtAIf4",
+             "https://www.youtube.com/watch?v=D-MyT1Px2Jg",
+             "https://www.youtube.com/watch?v=oM37othNNPI"
+        ];
+
+        const CHAPTERS = [
+            { id: 1, title: "Die Matrix", type: "sceneMatrix", desc: "Das 60Hz Gefängnis aus Licht. Kausale Fesseln vs. Akausale Freiheit (Weinreb).", src: [0,1,2,21,22] },
+            { id: 2, title: "CSE-Effekt", type: "sceneCSE", desc: "Die singende Wabe. Stehende Wellen in hexagonalen Kavitäten (Grebennikov).", src: [11,12,19] },
+            { id: 3, title: "Der Herzschlag", type: "scenePyramid", desc: "Pyramiden-Resonanz. 16,2 Hz (König) und 8,1 Hz Kammern. Die Harfe Davids.", src: [15,16,17,18,33,34] },
+            { id: 4, title: "Goldenes Gitter", type: "sceneGrid", desc: "Planetares PHI-Netzwerk. Die 4 Exile und 4 Elemente im Erd-Feld.", src: [8,9,10,23,24] },
+            { id: 5, title: "Die Stimmgabel", type: "sceneFork", desc: "Herz-Kohärenz & der 3-Fuß-Torus. Die zwei Cherubim im Kontakt.", src: [15,16,31] },
+            { id: 6, title: "Tummo-Flamme", type: "sceneTummo", desc: "Der innere Generator. Thermodynamische Umkehr gegen die Kälte.", src: [13,14,32] },
+            { id: 7, title: "Gnostische Feldarbeit", type: "sceneShield", desc: "Aktiver Widerstand. Frequenz-Schutzschilde und Tarnung.", src: [4,5,6,7,25,26] },
+            { id: 8, title: "Bau des Gitters", type: "sceneAnchors", desc: "Kailash, Gizeh, Schottland. Die drei geometrischen Anker.", src: [8,9,27,28] },
+            { id: 9, title: "Die Trinity", type: "sceneNet", desc: "Der Gnostische Virus. Ausbreitung im Netz der 8. Sphäre.", src: [4,7,29,30] },
+            { id: 10, title: "Die 1-Hz Zündung", type: "sceneBeam", desc: "Angkor Wat. Der CSE-Kondensator Strahl. Die Stille.", src: [15,17,20] },
+            { id: 11, title: "Der 9-er Akt", type: "sceneGeo9", desc: "Geometrische Umkehr. Superposition der Merkaba-Felder.", src: [0,1,8,3] },
+            { id: 12, title: "Bio-Gravitation", type: "sceneWater", desc: "EZ-Wasser (Pollack). Hexagonale Gitterstruktur auf Molekülebene.", src: [11,12,13,19] },
+            { id: 13, title: "Fraktaler Kollaps", type: "sceneCollapse", desc: "Entropie-Kettenreaktion. Auflösung der KI-Infrastruktur.", src: [13,14,21,22] },
+            { id: 14, title: "Bio-Lumineszenz", type: "sceneDNA", desc: "C12 Transformation. Kristalline DNA Helix und der Torus-Organismus.", src: [11,12,14,23,24] },
+            { id: 15, title: "Der Schlüssel", type: "sceneKey", desc: "3-6-9 Code. Das vollständige Human Interface nach Reichstein.", src: [0,1,2,4,5,6,7,19,20] },
+        ];
+
+        // --- REICHSTEIN GEMATRIA TABLE ---
+        const CHAR_VALS = {
+            'A':1, 'B':2, 'G':3, 'D':4, 'E':5, 'U':6, 'V':6, 'W':6, 'Z':7, 
+            'H':8, 'T':9, 'I':10, 'J':10, 'Y':10, 'K':11, 'C':11, 'L':12, 
+            'M':13, 'N':14, 'X':15, 'O':16, 'F':17, 'P':17, 'Q':19, 'R':20, 'S':21
+        };
+        const VAL_COLORS = {
+            1: 0xffff00, 2: 0xffffff, 3: 0xffaa00, 4: 0xff0000, 5: 0x0000ff, 
+            6: 0xff6600, 7: 0xff00ff, 8: 0x000000, 9: 0x8888ff, 10: 0xffffff,
+            11: 0x00ffcc, 12: 0x440088, 13: 0xff8888, 14: 0x00ff00, 15: 0x4b0082
+        };
+
+        // --- APP ENGINE ---
+        const app = {
+            scene: null, camera: null, renderer: null, composer: null, controls: null,
+            clock: new THREE.Clock(), raycaster: new THREE.Raycaster(), mouse: new THREE.Vector2(),
+            animatables: [], hitboxes: [], currentIdx: 0, isDreamMode: false,
+            
+            init: function() {
+                const container = document.getElementById('canvas-container');
+                
+                // Mobile-optimized renderer settings
+                const rendererConfig = {
+                    antialias: !isMobile, // Disable AA on mobile for performance
+                    alpha: false,
+                    powerPreference: isMobile ? 'low-power' : 'high-performance',
+                    failIfMajorPerformanceCaveat: false // Allow fallback
+                };
+                
+                this.renderer = new THREE.WebGLRenderer(rendererConfig);
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                
+                // Limit pixel ratio on mobile to improve performance
+                const pixelRatio = isMobile ? Math.min(window.devicePixelRatio, 2) : window.devicePixelRatio;
+                this.renderer.setPixelRatio(pixelRatio);
+                this.renderer.toneMapping = THREE.ReinhardToneMapping;
+                
+                console.log('[369] Renderer initialized | Pixel Ratio:', pixelRatio, '| Mobile Mode:', isMobile);
+                container.appendChild(this.renderer.domElement);
+
+                this.initScene();
+                this.buildDashboard();
+                this.buildArchiveList();
+                this.setupInteractions();
+                this.animate();
+                musicPlayer.init();
+                window.addEventListener('resize', () => this.onResize());
+            },
+
+            initScene: function() {
+                this.scene = new THREE.Scene();
+                this.scene.fog = new THREE.FogExp2(0x000000, 0.02);
+                this.camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 1000);
+                this.camera.position.set(0, 2, 16);
+                this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+                this.controls.enableDamping = true; 
+                this.controls.autoRotate = true; 
+                this.controls.autoRotateSpeed = isMobile ? 0.4 : 0.6; // Slower on mobile
+                
+                // Mobile touch controls
+                if (isMobile) {
+                    this.controls.rotateSpeed = 0.7; // Slower rotation for touch
+                    this.controls.zoomSpeed = 1.2;
+                    this.controls.enablePan = false; // Disable pan on mobile (conflicts with scroll)
+                    this.controls.touches = {
+                        ONE: THREE.TOUCH.ROTATE,
+                        TWO: THREE.TOUCH.DOLLY_PAN
+                    };
+                    console.log('[369] Mobile touch controls enabled');
+                }
+
+                const renderPass = new THREE.RenderPass(this.scene, this.camera);
+                // Reduce bloom on mobile for performance
+                const bloomStrength = isMobile ? 0.8 : 1.5;
+                const bloomPass = new THREE.UnrealBloomPass(
+                    new THREE.Vector2(window.innerWidth, window.innerHeight),
+                    bloomStrength,
+                    0.4,
+                    0.85
+                );
+                bloomPass.threshold = 0.1; bloomPass.strength = 1.2; bloomPass.radius = 0.5;
+                this.composer = new THREE.EffectComposer(this.renderer);
+                this.composer.addPass(renderPass); this.composer.addPass(bloomPass);
+                this.createStarfield();
+            },
+
+            onResize: function() {
+                this.camera.aspect = window.innerWidth/window.innerHeight;
+                this.camera.updateProjectionMatrix();
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.composer.setSize(window.innerWidth, window.innerHeight);
+            },
+
+            buildDashboard: function() {
+                const grid = document.getElementById('chapter-grid');
+                
+                // First card: Linktree
+                const linktreeCard = document.createElement('div');
+                linktreeCard.className = 'card';
+                linktreeCard.innerHTML = `<div class="card-meta"><span class="card-id" style="background: var(--gnosis);">LINK</span></div><div class="card-title">Alles vom Ersteller</div><div class="card-desc">Mehr Inhalte, Projekte & Social Media</div>`;
+                linktreeCard.onclick = () => window.open('https://linktr.ee/AEiOU.official', '_blank');
+                grid.appendChild(linktreeCard);
+                
+                // Then all chapters
+                CHAPTERS.forEach((ch, i) => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `<div class="card-meta"><span class="card-id">KAP ${ch.id<10?'0'+ch.id:ch.id}</span></div><div class="card-title">${ch.title}</div><div class="card-desc">${ch.desc}</div>`;
+                    card.onclick = () => this.loadScene(i);
+                    grid.appendChild(card);
+                });
+            },
+
+            scanName: function(name) {
+                const n = name.toUpperCase();
+                let sum = 0;
+                let details = "";
+                for(let i=0; i<n.length; i++) {
+                    let val = CHAR_VALS[n[i]] || 0;
+                    sum += val;
+                }
+                // Quersumme
+                let final = sum;
+                while(final > 22) {
+                    let s = final.toString().split('').reduce((a,b)=>parseInt(a)+parseInt(b), 0);
+                    final = s;
+                }
+                const colHex = VAL_COLORS[final] || 0xffffff;
+                const colStr = '#' + new THREE.Color(colHex).getHexString();
+                
+                document.getElementById('scanner-res').innerHTML = `WERT: ${sum} -> ${final} | FARBE: <span style="color:${colStr}">█</span>`;
+                
+                // Effect on Dashboard background
+                document.getElementById('dashboard').style.borderTop = `4px solid ${colStr}`;
+            },
+
+            loadScene: function(index) {
+                this.currentIdx = index;
+                const data = CHAPTERS[index];
+                document.getElementById('dashboard').classList.add('hidden');
+                document.getElementById('hud').classList.add('visible');
+                document.getElementById('sc-id').innerText = `KAP ${data.id}`;
+                document.getElementById('sc-title').innerText = data.title;
+                document.getElementById('dynamic-controls').innerText = data.desc; // Short context
+
+                // Show/hide scale calculator for Chapter 15
+                const scaleCalc = document.getElementById('scale-calculator');
+                if(data.id === 15) {
+                    scaleCalc.style.display = 'block';
+                    this.initScaleCalculator();
+                } else {
+                    scaleCalc.style.display = 'none';
+                }
+
+                this.clearScene();
+                this.camera.position.set(0, 2, 15); this.controls.target.set(0,0,0);
+                
+                // Execute Scene Builder
+                if(this[data.type]) this[data.type]();
+                else this.sceneGeneric(); 
+            },
+
+            initScaleCalculator: function() {
+                const heightInput = document.getElementById('height-input');
+                const unitInput = document.getElementById('unit-input');
+                const measureToggle = document.getElementById('measure-toggle');
+                const output = document.getElementById('scale-output');
+
+                const calculate = () => {
+                    let height = parseFloat(heightInput.value);
+                    const unit = unitInput.value;
+                    
+                    // Convert to cm for calculation
+                    if(unit === 'inch') height *= 2.54;
+                    else if(unit === 'm') height *= 100;
+                    
+                    // Scale factor: body height = 4.5 units in 3D
+                    const scaleFactor = height / 180; // 180cm base
+                    
+                    // Calculate radii
+                    const radius9 = 3.0 * scaleFactor; // Pleroma
+                    const radius6 = 2.8 * scaleFactor; // Torsion (3ft ≈ 91cm)
+                    const radius3 = 0.6 * scaleFactor; // Gnosis
+                    
+                    // Format output
+                    const formatVal = (v) => {
+                        if(unit === 'cm') return v.toFixed(1) + ' cm';
+                        if(unit === 'inch') return (v/2.54).toFixed(1) + ' inch';
+                        if(unit === 'm') return (v/100).toFixed(2) + ' m';
+                    };
+                    
+                    output.innerHTML = `
+                        <div style="margin-bottom:5px"><strong>9: Pleroma-Radius</strong></div>
+                        <div style="margin-left:10px; color:#fff">${formatVal(radius9)}</div>
+                        <div style="margin-top:8px; margin-bottom:5px"><strong>6: Torsions-Feld</strong></div>
+                        <div style="margin-left:10px; color:#bf00ff">${formatVal(radius6)}</div>
+                        <div style="margin-top:8px; margin-bottom:5px"><strong>3: Gnosis-Kern</strong></div>
+                        <div style="margin-left:10px; color:#ffd700">${formatVal(radius3)}</div>
+                    `;
+                    
+                    // Update 3D scene if in chapter 15
+                    if(this.currentIdx === 14 && this.scene.userData.scaleData) {
+                        this.scene.userData.scaleData.factor = scaleFactor;
+                        this.scene.userData.scaleData.showLines = measureToggle.checked;
+                    }
+                };
+
+                heightInput.addEventListener('input', calculate);
+                unitInput.addEventListener('change', calculate);
+                measureToggle.addEventListener('change', calculate);
+                
+                calculate(); // Initial calculation
+            },
+
+            create3DLabel: function(text, position, color = 0x00f0ff) {
+                // Create canvas for text
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = 256;
+                canvas.height = 64;
+                
+                ctx.fillStyle = 'rgba(0,0,0,0.8)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.strokeStyle = `#${new THREE.Color(color).getHexString()}`;
+                ctx.lineWidth = 2;
+                ctx.strokeRect(2, 2, canvas.width-4, canvas.height-4);
+                
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 20px "Courier New"';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(text, canvas.width/2, canvas.height/2);
+                
+                // Create sprite
+                const texture = new THREE.CanvasTexture(canvas);
+                const spriteMat = new THREE.SpriteMaterial({ 
+                    map: texture,
+                    transparent: true,
+                    opacity: 0.9
+                });
+                const sprite = new THREE.Sprite(spriteMat);
+                sprite.position.copy(position);
+                sprite.scale.set(2, 0.5, 1);
+                
+                return sprite;
+            },
+
+            createPointerLine: function(from, to, color = 0x00f0ff) {
+                const points = [from, to];
+                const geo = new THREE.BufferGeometry().setFromPoints(points);
+                const mat = new THREE.LineBasicMaterial({ 
+                    color: color,
+                    transparent: true,
+                    opacity: 0.6,
+                    linewidth: 2
+                });
+                return new THREE.Line(geo, mat);
+            },
+
+            toggleDreamMode: function() {
+                this.isDreamMode = !this.isDreamMode;
+                const container = document.getElementById('canvas-container');
+                const panel = document.getElementById('vis-panel');
+                
+                if(this.isDreamMode) {
+                    container.classList.add('dream-mode');
+                    panel.classList.add('dream-panel');
+                    // Modify materials for dream look (Particles/Transparency)
+                    this.scene.traverse(o => {
+                        if(o.isMesh && o.userData.dreamReady) {
+                            o.material.wireframe = false;
+                            o.material.opacity = 0.2;
+                            o.material.blending = THREE.AdditiveBlending;
+                        }
+                    });
+                } else {
+                    container.classList.remove('dream-mode');
+                    panel.classList.remove('dream-panel');
+                    // Revert
+                    this.loadScene(this.currentIdx); // Reload easiest way to reset mats
+                }
+            },
+
+            // --- SCENES ---
+            sceneMatrix: function() {
+                // Enhanced: 60Hz Prison Grid with Weinreb Duality
+                const grp = new THREE.Group();
+                
+                // Kausal Grid (Structured, Frozen)
+                const gridGeo = new THREE.PlaneGeometry(20, 20, 40, 40);
+                const gridMat = new THREE.MeshBasicMaterial({ 
+                    color: 0x00f0ff, wireframe: true, transparent: true, opacity: 0.25 
+                });
+                const grid = new THREE.Mesh(gridGeo, gridMat);
+                grid.rotation.x = -Math.PI/2;
+                grid.position.y = -1;
+                grid.userData.dreamReady = true;
+                grp.add(grid);
+                
+                // 60Hz Pulse Lines (Vertical Prison Bars)
+                const lineGroup = new THREE.Group();
+                for(let i = 0; i < 12; i++) {
+                    const angle = (i/12) * Math.PI * 2;
+                    const r = 8;
+                    const lineGeo = new THREE.BufferGeometry();
+                    lineGeo.setAttribute('position', new THREE.BufferAttribute(
+                        new Float32Array([
+                            Math.cos(angle)*r, -5, Math.sin(angle)*r,
+                            Math.cos(angle)*r, 5, Math.sin(angle)*r
+                        ]), 3
+                    ));
+                    const line = new THREE.Line(lineGeo, new THREE.LineBasicMaterial({
+                        color: 0x00f0ff, transparent: true, opacity: 0.15
+                    }));
+                    lineGroup.add(line);
+                }
+                grp.add(lineGroup);
+                
+                // Akausal Particles (Free, Chaotic, Golden)
+                const pGeo = new THREE.BufferGeometry();
+                const pCount = 2000;
+                const pPos = new Float32Array(pCount*3);
+                const pVel = [];
+                for(let i=0; i<pCount; i++) {
+                    pPos[i*3] = (Math.random()-0.5)*15;
+                    pPos[i*3+1] = (Math.random()-0.5)*10;
+                    pPos[i*3+2] = (Math.random()-0.5)*15;
+                    pVel.push(new THREE.Vector3(
+                        (Math.random()-0.5)*0.02,
+                        (Math.random()-0.5)*0.02,
+                        (Math.random()-0.5)*0.02
+                    ));
+                }
+                pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+                const particles = new THREE.Points(pGeo, new THREE.PointsMaterial({
+                    color: 0xffaa00, size: 0.06, transparent: true, opacity: 0.7
+                }));
+                grp.add(particles);
+                
+                // Central Conflict Sphere (Ahriman Core)
+                const core = new THREE.Mesh(
+                    new THREE.IcosahedronGeometry(1.5, 2),
+                    new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true, transparent: true, opacity: 0.3 })
+                );
+                grp.add(core);
+                
+                this.scene.add(grp);
+                
+                this.animatables.push(t => {
+                    // Grid Wave (60Hz Oscillation)
+                    const gridPos = gridGeo.attributes.position;
+                    for(let i=0; i<gridPos.count; i++) {
+                        const x = gridPos.getX(i);
+                        const y = gridPos.getY(i);
+                        gridPos.setZ(i, Math.sin(x*0.5 + t*60)*0.3 + Math.sin(y*0.5 + t*60)*0.3);
+                    }
+                    gridPos.needsUpdate = true;
+                    
+                    // Pulse bars
+                    lineGroup.children.forEach((line, i) => {
+                        line.material.opacity = 0.15 + Math.sin(t*60 + i*0.5)*0.1;
+                    });
+                    
+                    // Free particle movement (Brownian-like)
+                    for(let i=0; i<pCount; i++) {
+                        pPos[i*3] += pVel[i].x;
+                        pPos[i*3+1] += pVel[i].y;
+                        pPos[i*3+2] += pVel[i].z;
+                        
+                        // Bounce back if too far
+                        if(Math.abs(pPos[i*3]) > 15) pVel[i].x *= -1;
+                        if(Math.abs(pPos[i*3+1]) > 10) pVel[i].y *= -1;
+                        if(Math.abs(pPos[i*3+2]) > 15) pVel[i].z *= -1;
+                    }
+                    pGeo.attributes.position.needsUpdate = true;
+                    
+                    // Core rotation
+                    core.rotation.x = t*0.3;
+                    core.rotation.y = t*0.5;
+                    
+                    grp.rotation.y = t*0.05;
+                });
+                
+                this.addHitbox(grid, "Die Matrix (60Hz)", "Das kausale Gefängnis. Weinrebs Tag-Welt der Struktur.");
+                this.addHitbox(core, "Ahriman", "Der Gegenspieler. Einfrierung der Zeit.");
+            },
+
+            sceneCSE: function() { // Hexagons + Standing Wave
+                const grp = new THREE.Group();
+                const tubeGeo = new THREE.CylinderGeometry(1,1,5,6,1,true);
+                const mat = new THREE.MeshBasicMaterial({color:0xffaa00, wireframe:true, opacity:0.4, transparent:true});
+                const tube = new THREE.Mesh(tubeGeo, mat); tube.rotation.x=Math.PI/2; grp.add(tube);
+                
+                // Particles Wave
+                const pGeo = new THREE.BufferGeometry();
+                const pCount = 800;
+                const pPos = new Float32Array(pCount*3);
+                const bases = new Float32Array(pCount*3);
+                for(let i=0; i<pCount; i++) {
+                    bases[i*3] = (Math.random()-0.5); bases[i*3+1] = (Math.random()-0.5); bases[i*3+2] = (Math.random()-0.5)*5;
+                }
+                pGeo.setAttribute('position', new THREE.BufferAttribute(pPos,3));
+                const parts = new THREE.Points(pGeo, new THREE.PointsMaterial({color:0xffffff, size:0.05}));
+                grp.add(parts);
+                this.scene.add(grp);
+
+                this.animatables.push(t => {
+                    for(let i=0; i<pCount; i++) {
+                        const z = bases[i*3+2];
+                        // Interference Pattern
+                        const amp = Math.sin(z*4) * Math.cos(t*5);
+                        pPos[i*3] = bases[i*3] * (1+amp);
+                        pPos[i*3+1] = bases[i*3+1] * (1+amp);
+                        pPos[i*3+2] = z;
+                    }
+                    pGeo.attributes.position.needsUpdate = true;
+                    grp.rotation.y = t*0.1;
+                });
+                this.addHitbox(tube, "CSE", "Stehende Welle.");
+            },
+
+            scenePyramid: function() {
+                // Enhanced: Gizeh Pyramid with Resonance Chambers
+                const grp = new THREE.Group();
+                
+                // Main Pyramid Structure
+                const pyramidGeo = new THREE.ConeGeometry(4, 5, 4);
+                const pyramidMat = new THREE.MeshBasicMaterial({
+                    color: 0xffaa00, wireframe: true, transparent: true, opacity: 0.4
+                });
+                const pyramid = new THREE.Mesh(pyramidGeo, pyramidMat);
+                pyramid.position.y = 2.5;
+                grp.add(pyramid);
+                
+                // King's Chamber (16.2 Hz)
+                const kingChamber = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.8, 0.5, 0.8),
+                    new THREE.MeshBasicMaterial({ color: 0xff3300, transparent: true, opacity: 0.6 })
+                );
+                kingChamber.position.y = 3.5;
+                grp.add(kingChamber);
+                
+                // Queen's Chamber (8.1 Hz)
+                const queenChamber = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.7, 0.4, 0.7),
+                    new THREE.MeshBasicMaterial({ color: 0x8800ff, transparent: true, opacity: 0.6 })
+                );
+                queenChamber.position.y = 2.0;
+                grp.add(queenChamber);
+                
+                // Harp of David (Resonance Strings)
+                const harpGroup = new THREE.Group();
+                const stringCount = 7;
+                const strings = [];
+                for(let i=0; i<stringCount; i++) {
+                    const stringGeo = new THREE.CylinderGeometry(0.02, 0.02, 5);
+                    const stringMat = new THREE.MeshBasicMaterial({ 
+                        color: 0xffffff,
+                        transparent: true,
+                        opacity: 0.7
+                    });
+                    const string = new THREE.Mesh(stringGeo, stringMat);
+                    string.position.set((i - stringCount/2)*0.3, 2.5, 0);
+                    string.userData.frequency = 8.1 * (i+1); // Harmonic series
+                    strings.push(string);
+                    harpGroup.add(string);
+                }
+                grp.add(harpGroup);
+                
+                // Apex Energy Beam
+                const beamGeo = new THREE.CylinderGeometry(0.05, 0.4, 10, 8, 1, true);
+                const beamMat = new THREE.MeshBasicMaterial({
+                    color: 0xffffff, 
+                    transparent: true, 
+                    opacity: 0.25,
+                    blending: THREE.AdditiveBlending,
+                    side: THREE.DoubleSide
+                });
+                const beam = new THREE.Mesh(beamGeo, beamMat);
+                beam.position.y = 10;
+                grp.add(beam);
+                
+                // Resonance Wave Rings
+                const rings = [];
+                for(let i=0; i<5; i++) {
+                    const ring = new THREE.Mesh(
+                        new THREE.TorusGeometry(1+i*0.5, 0.05, 8, 32),
+                        new THREE.MeshBasicMaterial({ 
+                            color: 0x00ffff, 
+                            transparent: true, 
+                            opacity: 0.4 - i*0.05 
+                        })
+                    );
+                    ring.position.y = 5 + i*0.3;
+                    ring.userData.offset = i*0.2;
+                    rings.push(ring);
+                    grp.add(ring);
+                }
+                
+                // Base Mandala (Sacred Geometry)
+                const mandalaGeo = new THREE.BufferGeometry();
+                const mandalaPos = [];
+                for(let i=0; i<360; i+=5) {
+                    const angle = i * Math.PI/180;
+                    mandalaPos.push(Math.cos(angle)*5, 0, Math.sin(angle)*5);
+                }
+                mandalaGeo.setAttribute('position', new THREE.Float32BufferAttribute(mandalaPos, 3));
+                const mandala = new THREE.Points(mandalaGeo, new THREE.PointsMaterial({
+                    color: 0xffd700, size: 0.1
+                }));
+                grp.add(mandala);
+                
+                this.scene.add(grp);
+                
+                this.animatables.push(t => {
+                    grp.rotation.y = t*0.1;
+                    
+                    // String Vibration (Harmonic Oscillators)
+                    strings.forEach((string, i) => {
+                        const freq = string.userData.frequency;
+                        const amplitude = Math.sin(t*freq*0.1 + i)*0.15;
+                        string.scale.x = 1 + amplitude*3;
+                        string.material.opacity = 0.5 + Math.abs(amplitude)*0.5;
+                    });
+                    
+                    // Chamber Pulse
+                    const kingPulse = 1 + Math.sin(t*16.2*0.1)*0.1;
+                    kingChamber.scale.setScalar(kingPulse);
+                    kingChamber.material.opacity = 0.4 + Math.abs(Math.sin(t*16.2*0.1))*0.3;
+                    
+                    const queenPulse = 1 + Math.sin(t*8.1*0.1)*0.1;
+                    queenChamber.scale.setScalar(queenPulse);
+                    queenChamber.material.opacity = 0.4 + Math.abs(Math.sin(t*8.1*0.1))*0.3;
+                    
+                    // Beam fluctuation
+                    beam.scale.set(1 + Math.sin(t*3)*0.2, 1, 1 + Math.sin(t*3)*0.2);
+                    beam.material.opacity = 0.2 + Math.sin(t*2)*0.1;
+                    
+                    // Rings propagation
+                    rings.forEach((ring, i) => {
+                        const wave = (t*2 + ring.userData.offset) % 3;
+                        ring.position.y = 5 + wave*2;
+                        ring.scale.setScalar(1 + wave*0.3);
+                        ring.material.opacity = (1 - wave/3)*0.4;
+                    });
+                    
+                    // Mandala rotation
+                    mandala.rotation.y = -t*0.2;
+                });
+                
+                this.addHitbox(kingChamber, "Königskammer", "16.2 Hz Resonanz. Initiationskammer des Pharao.");
+                this.addHitbox(queenChamber, "Königinnenkammer", "8.1 Hz Erdresonanz. Basis-Frequenz.");
+                this.addHitbox(pyramid, "Pyramide von Gizeh", "Akustischer Resonator. Die Harfe Davids.");
+            },
+
+            sceneKey: function() { // Enhanced 3-6-9 with Scale Calculator & 3D Labels
+                const grp = new THREE.Group();
+                grp.position.y = -2;
+                
+                // Store scale data
+                this.scene.userData.scaleData = { factor: 1.0, showLines: false };
+                
+                // Avatar Body (Wire + Glass)
+                const wireMat = new THREE.MeshBasicMaterial({color:0x00f0ff, wireframe:true, opacity:0.15, transparent:true});
+                const glassMat = new THREE.MeshPhysicalMaterial({
+                    color:0x00f0ff, emissive:0x001133, transmission:0.5, opacity:0.4, transparent:true
+                });
+                const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.3,0.2,1.8,8), glassMat);
+                torso.position.y = 2.8;
+                torso.add(new THREE.Mesh(new THREE.CylinderGeometry(0.3,0.2,1.8,8), wireMat));
+                grp.add(torso);
+                
+                const head = new THREE.Mesh(new THREE.SphereGeometry(0.25,16,16), new THREE.MeshBasicMaterial({color:0xffffff, transparent:true, opacity:0.6}));
+                head.position.y = 4.0;
+                grp.add(head);
+                
+                // 9: Pleroma (Indigo/Saphir) - Top Sphere
+                const nine = new THREE.Mesh(
+                    new THREE.SphereGeometry(0.35, 32, 32),
+                    new THREE.MeshBasicMaterial({color:0x8888ff, transparent:true, opacity:0.8})
+                );
+                nine.position.y = 4.8;
+                grp.add(nine);
+                
+                // Pleroma Particle Cloud
+                const pGeo9 = new THREE.BufferGeometry();
+                const pPos9 = [];
+                for(let i=0; i<3000; i++) {
+                    const theta = Math.random()*Math.PI*2;
+                    const phi = Math.acos(2*Math.random()-1);
+                    const r = 0.5 + Math.random()*2.5;
+                    pPos9.push(
+                        r*Math.sin(phi)*Math.cos(theta),
+                        r*Math.sin(phi)*Math.sin(theta) + 4.8,
+                        r*Math.cos(phi)
+                    );
+                }
+                pGeo9.setAttribute('position', new THREE.Float32BufferAttribute(pPos9, 3));
+                const particles9 = new THREE.Points(pGeo9, new THREE.PointsMaterial({
+                    size:0.04, color:0x8888ff, transparent:true, opacity:0.4, blending:THREE.AdditiveBlending
+                }));
+                grp.add(particles9);
+                
+                // 6: Torsions-Feld (Orange/Achat) - Torus
+                const six = new THREE.Mesh(
+                    new THREE.TorusGeometry(2.0, 0.08, 16, 64),
+                    new THREE.MeshBasicMaterial({color:0xff6600, transparent:true, opacity:0.7})
+                );
+                six.rotation.x = Math.PI/2;
+                six.position.y = 3.0;
+                grp.add(six);
+                
+                // Torus Particle Ring
+                const pGeo6 = new THREE.BufferGeometry();
+                const pPos6 = [];
+                for(let i=0; i<1000; i++) {
+                    const angle = (i/1000)*Math.PI*2;
+                    const r = 2.0 + (Math.random()-0.5)*0.3;
+                    pPos6.push(Math.cos(angle)*r, 3.0, Math.sin(angle)*r);
+                }
+                pGeo6.setAttribute('position', new THREE.Float32BufferAttribute(pPos6, 3));
+                const particles6 = new THREE.Points(pGeo6, new THREE.PointsMaterial({
+                    size:0.06, color:0xff6600, transparent:true, opacity:0.5
+                }));
+                grp.add(particles6);
+                
+                // 3: Gnosis-Kern (Gold/Chrysolith) - Octahedron
+                const three = new THREE.Mesh(
+                    new THREE.OctahedronGeometry(0.5),
+                    new THREE.MeshBasicMaterial({color:0xffd700, wireframe:true, transparent:true, opacity:0.9})
+                );
+                three.position.y = 2.8;
+                grp.add(three);
+                
+                const threeGlow = new THREE.Mesh(
+                    new THREE.OctahedronGeometry(0.55),
+                    new THREE.MeshBasicMaterial({
+                        color:0xffaa00, transparent:true, opacity:0.25, blending:THREE.AdditiveBlending
+                    })
+                );
+                threeGlow.position.y = 2.8;
+                grp.add(threeGlow);
+                
+                // 8: Matrix Base (Dark Grid)
+                const eightG = new THREE.Group();
+                eightG.position.y = -0.5;
+                const matrixDome = new THREE.LineSegments(
+                    new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(5, 2)),
+                    new THREE.LineBasicMaterial({color:0x333333, transparent:true, opacity:0.15})
+                );
+                matrixDome.rotation.x = Math.PI/2;
+                matrixDome.scale.set(1, 0.15, 1);
+                eightG.add(matrixDome);
+                grp.add(eightG);
+                
+                // 3D Labels
+                const label9 = this.create3DLabel('9: PLEROMA', new THREE.Vector3(0, 7.5, 0), 0x8888ff);
+                const label6 = this.create3DLabel('6: TORSION', new THREE.Vector3(3.5, 3.0, 0), 0xff6600);
+                const label3 = this.create3DLabel('3: GNOSIS', new THREE.Vector3(0, 1.0, 2.5), 0xffd700);
+                const label8 = this.create3DLabel('8: MATRIX', new THREE.Vector3(0, -3.0, 3.5), 0x666666);
+                
+                // Pointer Lines
+                const line9 = this.createPointerLine(new THREE.Vector3(0, 7.0, 0), new THREE.Vector3(0, 5.2, 0), 0x8888ff);
+                const line6 = this.createPointerLine(new THREE.Vector3(3.0, 3.0, 0), new THREE.Vector3(2.0, 3.0, 0), 0xff6600);
+                const line3 = this.createPointerLine(new THREE.Vector3(0, 1.5, 2.0), new THREE.Vector3(0, 2.8, 0.5), 0xffd700);
+                const line8 = this.createPointerLine(new THREE.Vector3(0, -2.5, 3.0), new THREE.Vector3(0, -0.5, 1.0), 0x666666);
+                
+                grp.add(label9, label6, label3, label8);
+                grp.add(line9, line6, line3, line8);
+                
+                // Measurement Lines (conditional)
+                const measureGroup = new THREE.Group();
+                measureGroup.visible = false;
+                
+                // Radius indicators
+                const createRadiusLine = (r, y, color) => {
+                    const geo = new THREE.BufferGeometry();
+                    geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([0,y,0, r,y,0]), 3));
+                    return new THREE.Line(geo, new THREE.LineBasicMaterial({color, linewidth:2}));
+                };
+                
+                measureGroup.add(createRadiusLine(3.0, 4.8, 0x8888ff)); // 9
+                measureGroup.add(createRadiusLine(2.0, 3.0, 0xff6600)); // 6
+                measureGroup.add(createRadiusLine(0.5, 2.8, 0xffd700)); // 3
+                grp.add(measureGroup);
+                
+                this.scene.add(grp);
+                
+                this.animatables.push(t => {
+                    // Breathing animation
+                    const breathe = 1 + Math.sin(t*1.5)*0.03;
+                    torso.scale.set(breathe, 1, breathe);
+                    
+                    // 9: Pleroma rotation
+                    nine.rotation.y = t*0.3;
+                    nine.rotation.x = Math.sin(t*0.5)*0.2;
+                    particles9.rotation.y = -t*0.15;
+                    
+                    // 6: Torus spin
+                    six.rotation.z = t*0.4;
+                    particles6.rotation.y = t*0.5;
+                    
+                    // 3: Crystal rotation
+                    three.rotation.y = t*0.6;
+                    three.rotation.x = Math.sin(t*0.8)*0.3;
+                    threeGlow.rotation.y = -t*0.5;
+                    threeGlow.rotation.x = Math.cos(t*0.7)*0.3;
+                    
+                    // 8: Matrix dome
+                    eightG.rotation.y = t*0.08;
+                    matrixDome.material.opacity = 0.1 + Math.sin(t*2)*0.05;
+                    
+                    // Main group rotation
+                    grp.rotation.y = t*0.12;
+                    
+                    // Update measurements if enabled
+                    const scaleData = this.scene.userData.scaleData;
+                    if(scaleData) {
+                        measureGroup.visible = scaleData.showLines;
+                        // Scale could be applied here if needed
+                    }
+                    
+                    // Label floating
+                    label9.position.y = 7.5 + Math.sin(t*2)*0.1;
+                    label6.position.x = 3.5 + Math.sin(t*2+1)*0.1;
+                    label3.position.z = 2.5 + Math.sin(t*2+2)*0.1;
+                });
+                
+                this.addHitbox(nine, "9: Pleroma", "Saphir (Indigo). Der unbewegte Vortex. Weisheit & Transzendenz.");
+                this.addHitbox(six, "6: Torsion", "Achat (Orange). Gravitationsfeld. Sexus & Kraft.");
+                this.addHitbox(three, "3: Gnosis", "Chrysolith (Gold). Kristalline Matrix. Gemeinschaft & Erkenntnis.");
+                this.addHitbox(torso, "Adam Kadmon", "Der transformierte Mensch. C12-Silizium-Basis.");
+            },
+
+            sceneWater: function() { // Lattice
+                const grp = new THREE.Group();
+                const geo = new THREE.SphereGeometry(0.1,8,8);
+                const mat = new THREE.MeshBasicMaterial({color:0x00aaff});
+                const mesh = new THREE.InstancedMesh(geo, mat, 200);
+                const dummy = new THREE.Object3D();
+                let i=0;
+                for(let x=-5; x<=5; x++) for(let z=-5; z<=5; z++) {
+                    if(i<200) {
+                        dummy.position.set(x*0.8 + (z%2)*0.4, 0, z*0.7);
+                        dummy.updateMatrix(); mesh.setMatrixAt(i++, dummy.matrix);
+                    }
+                }
+                grp.add(mesh); this.scene.add(grp);
+                this.animatables.push(t => {
+                    grp.rotation.y = t*0.1;
+                });
+                this.addHitbox(grp, "H3O2", "Kristallines Wasser.");
+            },
+            
+            sceneFork: function() { // Tuning Fork = Heart Coherence (3ft Torus)
+                const grp = new THREE.Group();
+                // Two Prongs (Cherubim in Contact)
+                const prong1 = new THREE.Mesh(new THREE.CylinderGeometry(0.1,0.1,4), new THREE.MeshBasicMaterial({color:0xff6600}));
+                prong1.position.set(-0.6, 2, 0); grp.add(prong1);
+                const prong2 = prong1.clone(); prong2.position.set(0.6, 2, 0); grp.add(prong2);
+                const base = new THREE.Mesh(new THREE.CylinderGeometry(0.15,0.15,0.5), new THREE.MeshBasicMaterial({color:0xffaa00}));
+                base.position.y = 0.25; grp.add(base);
+                
+                // Torus Field (3 Fuß = ~0.91m radius)
+                const torus = new THREE.Mesh(new THREE.TorusGeometry(3, 0.05, 16, 100), new THREE.MeshBasicMaterial({color:0x00ff88, transparent:true, opacity:0.3}));
+                torus.rotation.x = Math.PI/2; grp.add(torus);
+                
+                // Heart Coherence Waves
+                const waveGeo = new THREE.BufferGeometry();
+                const wPos = new Float32Array(200*3);
+                for(let i=0; i<200; i++) {
+                    const angle = (i/200)*Math.PI*2;
+                    wPos[i*3] = Math.cos(angle)*3; wPos[i*3+1] = 0; wPos[i*3+2] = Math.sin(angle)*3;
+                }
+                waveGeo.setAttribute('position', new THREE.BufferAttribute(wPos,3));
+                const waves = new THREE.Points(waveGeo, new THREE.PointsMaterial({color:0xff6600, size:0.1}));
+                grp.add(waves);
+                
+                this.scene.add(grp);
+                this.animatables.push(t => {
+                    // 0.1 Hz Heart Coherence Frequency
+                    prong1.position.x = -0.6 + Math.sin(t*0.1*Math.PI*2)*0.05;
+                    prong2.position.x = 0.6 - Math.sin(t*0.1*Math.PI*2)*0.05;
+                    torus.scale.set(1+Math.sin(t*0.1*Math.PI*2)*0.1, 1+Math.sin(t*0.1*Math.PI*2)*0.1, 1);
+                    waves.rotation.y = t*0.1;
+                    grp.rotation.y = t*0.05;
+                });
+                this.addHitbox(torus, "Herz-Torus", "0.1 Hz Kohärenz");
+            },
+
+            sceneTummo: function() { // Kundalini Fire Breath
+                const grp = new THREE.Group();
+                // Central Channel (Sushumna)
+                const channel = new THREE.Mesh(new THREE.CylinderGeometry(0.1,0.1,8), new THREE.MeshBasicMaterial({color:0xffffff, transparent:true, opacity:0.2}));
+                grp.add(channel);
+                
+                // Spiral Fire Particles (Kundalini Rising)
+                const pGeo = new THREE.BufferGeometry();
+                const pCount = 1000;
+                const pPos = new Float32Array(pCount*3);
+                const pColors = new Float32Array(pCount*3);
+                const bases = [];
+                for(let i=0; i<pCount; i++) {
+                    const t = i/pCount;
+                    const angle = t*Math.PI*8; // 4 spirals
+                    const radius = 0.5 + t*0.5;
+                    const y = t*8 - 4;
+                    bases.push({angle, radius, y, offset: Math.random()*Math.PI*2});
+                    // Gradient: Red -> Orange -> Yellow -> White
+                    const heat = t;
+                    pColors[i*3] = 1; pColors[i*3+1] = heat*0.6; pColors[i*3+2] = heat*heat*0.3;
+                }
+                pGeo.setAttribute('position', new THREE.BufferAttribute(pPos,3));
+                pGeo.setAttribute('color', new THREE.BufferAttribute(pColors,3));
+                const fire = new THREE.Points(pGeo, new THREE.PointsMaterial({size:0.08, vertexColors:true, transparent:true, opacity:0.8}));
+                grp.add(fire);
+                
+                // Base Flame
+                const baseFlame = new THREE.Mesh(new THREE.ConeGeometry(0.5,1,8), new THREE.MeshBasicMaterial({color:0xff0000, transparent:true, opacity:0.5}));
+                baseFlame.position.y = -4; grp.add(baseFlame);
+                
+                this.scene.add(grp);
+                this.animatables.push(t => {
+                    for(let i=0; i<pCount; i++) {
+                        const b = bases[i];
+                        const spiral = b.angle + t*2 + b.offset;
+                        pPos[i*3] = Math.cos(spiral)*b.radius;
+                        pPos[i*3+1] = b.y + Math.sin(t*3+b.offset)*0.2;
+                        pPos[i*3+2] = Math.sin(spiral)*b.radius;
+                    }
+                    pGeo.attributes.position.needsUpdate = true;
+                    baseFlame.scale.set(1+Math.sin(t*5)*0.2, 1+Math.sin(t*5)*0.3, 1+Math.sin(t*5)*0.2);
+                    grp.rotation.y = t*0.1;
+                });
+                this.addHitbox(channel, "Sushumna", "Kundalini-Kanal");
+            },
+
+            sceneShield: function() { // Frequency Shield (Interference Pattern)
+                const grp = new THREE.Group();
+                // Central Sphere (Bio-Field)
+                const core = new THREE.Mesh(new THREE.SphereGeometry(1,32,32), new THREE.MeshBasicMaterial({color:0x00d2ff, wireframe:true, transparent:true, opacity:0.3}));
+                grp.add(core);
+                
+                // Multi-Layer Shields (Harmonic Frequencies)
+                const shields = [];
+                const freqs = [1, 1.618, 2.618, 4.236]; // Fibonacci ratios
+                freqs.forEach((f, idx) => {
+                    const shield = new THREE.Mesh(
+                        new THREE.IcosahedronGeometry(2+idx*0.8, 1),
+                        new THREE.MeshBasicMaterial({color:0x00d2ff, wireframe:true, transparent:true, opacity:0.15})
+                    );
+                    shield.userData.freq = f;
+                    shields.push(shield);
+                    grp.add(shield);
+                });
+                
+                // Interference Particles
+                const pGeo = new THREE.BufferGeometry();
+                const pCount = 500;
+                const pPos = new Float32Array(pCount*3);
+                for(let i=0; i<pCount; i++) {
+                    const theta = Math.random()*Math.PI*2;
+                    const phi = Math.acos(2*Math.random()-1);
+                    const r = 3 + Math.random()*2;
+                    pPos[i*3] = r*Math.sin(phi)*Math.cos(theta);
+                    pPos[i*3+1] = r*Math.sin(phi)*Math.sin(theta);
+                    pPos[i*3+2] = r*Math.cos(phi);
+                }
+                pGeo.setAttribute('position', new THREE.BufferAttribute(pPos,3));
+                const particles = new THREE.Points(pGeo, new THREE.PointsMaterial({color:0xffffff, size:0.05}));
+                grp.add(particles);
+                
+                this.scene.add(grp);
+                this.animatables.push(t => {
+                    shields.forEach((s, i) => {
+                        s.rotation.y = t*s.userData.freq*0.2;
+                        s.rotation.x = t*s.userData.freq*0.1;
+                        // Pulse with frequency
+                        s.scale.setScalar(1 + Math.sin(t*s.userData.freq*2)*0.05);
+                    });
+                    particles.rotation.y = -t*0.3;
+                    core.rotation.y = t*0.5;
+                });
+                this.addHitbox(core, "Bio-Feld", "Frequenz-Schutz");
+            },
+
+            sceneGrid: function() { // Planetary Grid (Ley Lines)
+                const grp = new THREE.Group();
+                // Earth Icosahedron (Platonic Solid)
+                const earth = new THREE.Mesh(
+                    new THREE.IcosahedronGeometry(3, 2),
+                    new THREE.MeshBasicMaterial({color:0x0088ff, wireframe:false, transparent:true, opacity:0.1})
+                );
+                grp.add(earth);
+                
+                // Wireframe Overlay (Ley Lines)
+                const wireframe = new THREE.Mesh(
+                    new THREE.IcosahedronGeometry(3.05, 2),
+                    new THREE.MeshBasicMaterial({color:0xffaa00, wireframe:true})
+                );
+                grp.add(wireframe);
+                
+                // PHI-Nodes (12 Vertices of Icosahedron)
+                const vertices = new THREE.IcosahedronGeometry(3, 0).attributes.position;
+                const nodes = [];
+                const nodePositions = [];
+                for(let i=0; i<vertices.count; i++) {
+                    const x = vertices.getX(i);
+                    const y = vertices.getY(i);
+                    const z = vertices.getZ(i);
+                    // Check if unique position
+                    const exists = nodePositions.some(p => Math.abs(p.x-x)<0.01 && Math.abs(p.y-y)<0.01 && Math.abs(p.z-z)<0.01);
+                    if(!exists && nodes.length < 12) {
+                        nodePositions.push({x,y,z});
+                        const node = new THREE.Mesh(
+                            new THREE.SphereGeometry(0.15, 8, 8),
+                            new THREE.MeshBasicMaterial({color:0xffd700})
+                        );
+                        node.position.set(x, y, z);
+                        nodes.push(node);
+                        grp.add(node);
+                    }
+                }
+                
+                // Energy Pulses along Ley Lines
+                const pulseGeo = new THREE.BufferGeometry();
+                const pulsePos = new Float32Array(100*3);
+                pulseGeo.setAttribute('position', new THREE.BufferAttribute(pulsePos,3));
+                const pulses = new THREE.Points(pulseGeo, new THREE.PointsMaterial({color:0x00ff00, size:0.1}));
+                grp.add(pulses);
+                
+                this.scene.add(grp);
+                this.animatables.push(t => {
+                    grp.rotation.y = t*0.1;
+                    nodes.forEach((n, i) => {
+                        n.scale.setScalar(1 + Math.sin(t*2+i)*0.2);
+                    });
+                    // Pulse animation
+                    for(let i=0; i<100; i++) {
+                        const progress = (t*0.5 + i/100) % 1;
+                        const angle = progress*Math.PI*2;
+                        const r = 3;
+                        pulsePos[i*3] = Math.cos(angle)*r;
+                        pulsePos[i*3+1] = Math.sin(angle)*r*Math.sin(t+i*0.1);
+                        pulsePos[i*3+2] = Math.sin(angle)*r;
+                    }
+                    pulseGeo.attributes.position.needsUpdate = true;
+                });
+                this.addHitbox(earth, "Planetares Gitter", "12 PHI-Knoten");
+            },
+
+            sceneAnchors: function() { // Three Sacred Anchors
+                const grp = new THREE.Group();
+                // 1. Kailash (Tibet) - Pyramid
+                const kailash = new THREE.Mesh(
+                    new THREE.ConeGeometry(1, 2, 4),
+                    new THREE.MeshBasicMaterial({color:0xffffff, wireframe:true})
+                );
+                kailash.position.set(-3, 0, 0);
+                grp.add(kailash);
+                
+                // 2. Gizeh (Egypt) - Pyramid
+                const gizeh = new THREE.Mesh(
+                    new THREE.ConeGeometry(1.2, 2.2, 4),
+                    new THREE.MeshBasicMaterial({color:0xffaa00, wireframe:true})
+                );
+                gizeh.position.set(0, 0, 0);
+                grp.add(gizeh);
+                
+                // 3. Scotland (Stone Circles) - Ring
+                const scotland = new THREE.Mesh(
+                    new THREE.TorusGeometry(1, 0.1, 8, 16),
+                    new THREE.MeshBasicMaterial({color:0x00ff88, wireframe:true})
+                );
+                scotland.position.set(3, 0, 0);
+                scotland.rotation.x = Math.PI/2;
+                grp.add(scotland);
+                
+                // Connection Lines (Ley Lines)
+                const lineGeo = new THREE.BufferGeometry();
+                const linePos = new Float32Array([
+                    -3,0,0, 0,0,0,  0,0,0, 3,0,0,  3,0,0, -3,0,0
+                ]);
+                lineGeo.setAttribute('position', new THREE.BufferAttribute(linePos, 3));
+                const lines = new THREE.Line(lineGeo, new THREE.LineBasicMaterial({color:0x00f0ff, transparent:true, opacity:0.5}));
+                grp.add(lines);
+                
+                // Energy Flow Particles
+                const pGeo = new THREE.BufferGeometry();
+                const pPos = new Float32Array(60*3);
+                const pBases = [];
+                for(let i=0; i<20; i++) { pBases.push({from:0, to:1, progress:i/20}); }
+                for(let i=0; i<20; i++) { pBases.push({from:1, to:2, progress:i/20}); }
+                for(let i=0; i<20; i++) { pBases.push({from:2, to:0, progress:i/20}); }
+                pGeo.setAttribute('position', new THREE.BufferAttribute(pPos,3));
+                const flow = new THREE.Points(pGeo, new THREE.PointsMaterial({color:0x00ffff, size:0.1}));
+                grp.add(flow);
+                
+                this.scene.add(grp);
+                const anchors = [[-3,0,0], [0,0,0], [3,0,0]];
+                this.animatables.push(t => {
+                    grp.rotation.y = t*0.05;
+                    kailash.rotation.y = t*0.2;
+                    gizeh.rotation.y = -t*0.2;
+                    scotland.rotation.z = t*0.3;
+                    
+                    // Flow animation
+                    pBases.forEach((b, i) => {
+                        const p = (b.progress + t*0.1) % 1;
+                        const from = anchors[b.from];
+                        const to = anchors[b.to];
+                        pPos[i*3] = from[0] + (to[0]-from[0])*p;
+                        pPos[i*3+1] = from[1] + (to[1]-from[1])*p + Math.sin(p*Math.PI)*0.5;
+                        pPos[i*3+2] = from[2] + (to[2]-from[2])*p;
+                    });
+                    pGeo.attributes.position.needsUpdate = true;
+                });
+                this.addHitbox(gizeh, "Drei Anker", "Kailash-Gizeh-Schottland");
+            },
+
+            sceneNet: function() { // Trinity Virus Spread
+                const grp = new THREE.Group();
+                // Central Node (Trinity Core)
+                const core = new THREE.Mesh(
+                    new THREE.OctahedronGeometry(0.5),
+                    new THREE.MeshBasicMaterial({color:0xff0000, wireframe:false})
+                );
+                grp.add(core);
+                
+                // Network Nodes (8th Sphere Grid)
+                const nodes = [];
+                const connections = [];
+                for(let i=0; i<50; i++) {
+                    const theta = Math.random()*Math.PI*2;
+                    const phi = Math.acos(2*Math.random()-1);
+                    const r = 2 + Math.random()*5;
+                    const node = new THREE.Mesh(
+                        new THREE.SphereGeometry(0.1, 6, 6),
+                        new THREE.MeshBasicMaterial({color:0x666666})
+                    );
+                    node.position.set(
+                        r*Math.sin(phi)*Math.cos(theta),
+                        r*Math.sin(phi)*Math.sin(theta),
+                        r*Math.cos(phi)
+                    );
+                    node.userData.infected = false;
+                    node.userData.infectionTime = 0;
+                    nodes.push(node);
+                    grp.add(node);
+                }
+                
+                // Connection Lines
+                nodes.forEach((n1, i) => {
+                    nodes.forEach((n2, j) => {
+                        if(i<j && n1.position.distanceTo(n2.position) < 3) {
+                            const geo = new THREE.BufferGeometry();
+                            geo.setAttribute('position', new THREE.BufferAttribute(
+                                new Float32Array([n1.position.x, n1.position.y, n1.position.z, n2.position.x, n2.position.y, n2.position.z]), 3
+                            ));
+                            const line = new THREE.Line(geo, new THREE.LineBasicMaterial({color:0x333333, transparent:true, opacity:0.2}));
+                            connections.push({line, n1, n2});
+                            grp.add(line);
+                        }
+                    });
+                });
+                
+                this.scene.add(grp);
+                this.animatables.push(t => {
+                    grp.rotation.y = t*0.1;
+                    core.rotation.x = t*0.5;
+                    core.rotation.y = t*0.7;
+                    
+                    // Infection Spread (Viral Pattern)
+                    nodes.forEach(n => {
+                        if(!n.userData.infected) {
+                            const dist = n.position.distanceTo(core.position);
+                            if(t*2 > dist) {
+                                n.userData.infected = true;
+                                n.userData.infectionTime = t;
+                                n.material.color.setHex(0xff0000);
+                            }
+                        } else {
+                            // Pulsing infected nodes
+                            const age = t - n.userData.infectionTime;
+                            n.scale.setScalar(1 + Math.sin(age*5)*0.3);
+                        }
+                    });
+                    
+                    // Update connection colors
+                    connections.forEach(c => {
+                        if(c.n1.userData.infected && c.n2.userData.infected) {
+                            c.line.material.color.setHex(0xff0000);
+                            c.line.material.opacity = 0.6;
+                        }
+                    });
+                });
+                this.addHitbox(core, "Trinity", "Gnostischer Virus");
+            },
+
+            sceneBeam: function() { // 1 Hz Resonance Beam (Angkor Wat)
+                const grp = new THREE.Group();
+                // Temple Base (CSE Capacitor)
+                const base = new THREE.Mesh(
+                    new THREE.BoxGeometry(3, 0.5, 3),
+                    new THREE.MeshBasicMaterial({color:0x888888, wireframe:true})
+                );
+                base.position.y = -2;
+                grp.add(base);
+                
+                // Central Beam (1 Hz Standing Wave)
+                const beamGeo = new THREE.CylinderGeometry(0.3, 0.3, 10, 32, 1, true);
+                const beamMat = new THREE.MeshBasicMaterial({color:0xffffff, transparent:true, opacity:0.3, side:THREE.DoubleSide});
+                const beam = new THREE.Mesh(beamGeo, beamMat);
+                beam.position.y = 3;
+                grp.add(beam);
+                
+                // Particle Beam (Vertical Flow)
+                const pGeo = new THREE.BufferGeometry();
+                const pCount = 1000;
+                const pPos = new Float32Array(pCount*3);
+                const pBases = [];
+                for(let i=0; i<pCount; i++) {
+                    const angle = Math.random()*Math.PI*2;
+                    const r = Math.random()*0.3;
+                    pBases.push({angle, r, y:Math.random()*10-2});
+                }
+                pGeo.setAttribute('position', new THREE.BufferAttribute(pPos,3));
+                const particles = new THREE.Points(pGeo, new THREE.PointsMaterial({color:0xffffff, size:0.05}));
+                grp.add(particles);
+                
+                // Resonance Rings (1 Hz Pulses)
+                const rings = [];
+                for(let i=0; i<5; i++) {
+                    const ring = new THREE.Mesh(
+                        new THREE.TorusGeometry(0.5, 0.05, 8, 32),
+                        new THREE.MeshBasicMaterial({color:0x00ffff, transparent:true, opacity:0.6})
+                    );
+                    ring.rotation.x = Math.PI/2;
+                    ring.userData.offset = i*0.2;
+                    rings.push(ring);
+                    grp.add(ring);
+                }
+                
+                this.scene.add(grp);
+                this.animatables.push(t => {
+                    // 1 Hz Frequency (1 cycle per second)
+                    const phase = (t % 1)*Math.PI*2;
+                    beam.scale.x = beam.scale.z = 1 + Math.sin(phase)*0.2;
+                    
+                    // Particle flow
+                    pBases.forEach((b, i) => {
+                        const y = (b.y + t*2) % 12 - 2;
+                        pPos[i*3] = Math.cos(b.angle + t)*b.r;
+                        pPos[i*3+1] = y;
+                        pPos[i*3+2] = Math.sin(b.angle + t)*b.r;
+                    });
+                    pGeo.attributes.position.needsUpdate = true;
+                    
+                    // Resonance rings
+                    rings.forEach((r, i) => {
+                        const y = ((t*2 + r.userData.offset) % 2)*5 - 2;
+                        r.position.y = y;
+                        r.scale.setScalar((y+2)/5 + 0.5);
+                        r.material.opacity = 1 - (y+2)/5;
+                    });
+                    
+                    grp.rotation.y = t*0.05;
+                });
+                this.addHitbox(beam, "1 Hz Strahl", "Stille Resonanz");
+            },
+
+            sceneGeo9: function() { // 9er Act (Merkaba Superposition)
+                const grp = new THREE.Group();
+                // Upward Tetrahedron (Male/Electric)
+                const tetra1Geo = new THREE.TetrahedronGeometry(2);
+                const tetra1 = new THREE.Mesh(tetra1Geo, new THREE.MeshBasicMaterial({color:0x00ffff, wireframe:true, transparent:true, opacity:0.6}));
+                grp.add(tetra1);
+                
+                // Downward Tetrahedron (Female/Magnetic)
+                const tetra2 = tetra1.clone();
+                tetra2.rotation.y = Math.PI;
+                tetra2.material = new THREE.MeshBasicMaterial({color:0xff00ff, wireframe:true, transparent:true, opacity:0.6});
+                grp.add(tetra2);
+                
+                // Central Sphere (Unity Point)
+                const core = new THREE.Mesh(
+                    new THREE.SphereGeometry(0.5, 16, 16),
+                    new THREE.MeshBasicMaterial({color:0xffffff, wireframe:true})
+                );
+                grp.add(core);
+                
+                // Energy Vortex (Counter-Rotating)
+                const vortexGeo = new THREE.BufferGeometry();
+                const vCount = 500;
+                const vPos = new Float32Array(vCount*3);
+                const vBases = [];
+                for(let i=0; i<vCount; i++) {
+                    const t = i/vCount;
+                    vBases.push({t, dir: i<vCount/2 ? 1 : -1});
+                }
+                vortexGeo.setAttribute('position', new THREE.BufferAttribute(vPos,3));
+                const vortex = new THREE.Points(vortexGeo, new THREE.PointsMaterial({color:0xffaa00, size:0.06}));
+                grp.add(vortex);
+                
+                // 9 Sacred Points (Nonagon)
+                const sacred9 = [];
+                for(let i=0; i<9; i++) {
+                    const angle = (i/9)*Math.PI*2;
+                    const node = new THREE.Mesh(
+                        new THREE.SphereGeometry(0.1, 8, 8),
+                        new THREE.MeshBasicMaterial({color:0xffd700})
+                    );
+                    node.position.set(Math.cos(angle)*3, 0, Math.sin(angle)*3);
+                    node.userData.angle = angle;
+                    sacred9.push(node);
+                    grp.add(node);
+                }
+                
+                this.scene.add(grp);
+                this.animatables.push(t => {
+                    // Counter-rotation (Merkaba activation)
+                    tetra1.rotation.y = t*0.3;
+                    tetra2.rotation.y = -t*0.3;
+                    core.rotation.x = t*0.5;
+                    core.rotation.z = t*0.4;
+                    
+                    // Vortex animation
+                    vBases.forEach((b, i) => {
+                        const spiral = t*2*b.dir + b.t*Math.PI*4;
+                        const r = b.t*3;
+                        const y = (b.t*4 - 2);
+                        vPos[i*3] = Math.cos(spiral)*r;
+                        vPos[i*3+1] = y;
+                        vPos[i*3+2] = Math.sin(spiral)*r;
+                    });
+                    vortexGeo.attributes.position.needsUpdate = true;
+                    
+                    // 9 Points Pulse
+                    sacred9.forEach((n, i) => {
+                        n.scale.setScalar(1 + Math.sin(t*2 + i*Math.PI*2/9)*0.3);
+                        n.position.y = Math.sin(t + n.userData.angle)*0.5;
+                    });
+                });
+                this.addHitbox(core, "Merkaba", "9er Geometrie");
+            },
+
+            sceneCollapse: function() { // Fractal Implosion
+                const grp = new THREE.Group();
+                // Central Void
+                const void_ = new THREE.Mesh(
+                    new THREE.SphereGeometry(0.3, 16, 16),
+                    new THREE.MeshBasicMaterial({color:0x000000})
+                );
+                grp.add(void_);
+                
+                // Fractal Cubes (Collapsing Hierarchy)
+                const cubes = [];
+                const levels = 5;
+                for(let level=0; level<levels; level++) {
+                    const count = Math.pow(2, level);
+                    for(let i=0; i<count; i++) {
+                        const cube = new THREE.Mesh(
+                            new THREE.BoxGeometry(0.5, 0.5, 0.5),
+                            new THREE.MeshBasicMaterial({color:0x555555, wireframe:true, transparent:true, opacity:0.4})
+                        );
+                        const angle = (i/count)*Math.PI*2;
+                        const r = 2 + level*1.5;
+                        cube.position.set(Math.cos(angle)*r, 0, Math.sin(angle)*r);
+                        cube.userData = {level, angle, radius:r, index:i};
+                        cubes.push(cube);
+                        grp.add(cube);
+                    }
+                }
+                
+                // Entropy Particles (Chaotic Decay)
+                const pGeo = new THREE.BufferGeometry();
+                const pCount = 1000;
+                const pPos = new Float32Array(pCount*3);
+                const pVel = [];
+                for(let i=0; i<pCount; i++) {
+                    const theta = Math.random()*Math.PI*2;
+                    const phi = Math.acos(2*Math.random()-1);
+                    const r = 8 + Math.random()*5;
+                    pPos[i*3] = r*Math.sin(phi)*Math.cos(theta);
+                    pPos[i*3+1] = r*Math.sin(phi)*Math.sin(theta);
+                    pPos[i*3+2] = r*Math.cos(phi);
+                    pVel.push({x:-pPos[i*3]*0.01, y:-pPos[i*3+1]*0.01, z:-pPos[i*3+2]*0.01});
+                }
+                pGeo.setAttribute('position', new THREE.BufferAttribute(pPos,3));
+                const entropy = new THREE.Points(pGeo, new THREE.PointsMaterial({color:0xff0000, size:0.03}));
+                grp.add(entropy);
+                
+                this.scene.add(grp);
+                this.animatables.push(t => {
+                    // Collapse animation
+                    cubes.forEach(c => {
+                        const collapseProgress = (t*0.5) % 3; // 3 second cycle
+                        const targetR = c.userData.radius * (1 - Math.min(collapseProgress/2, 1));
+                        const currentR = Math.max(targetR, 0.5);
+                        c.position.x = Math.cos(c.userData.angle + t*0.2)*currentR;
+                        c.position.z = Math.sin(c.userData.angle + t*0.2)*currentR;
+                        c.rotation.x = t*(c.userData.level+1)*0.3;
+                        c.rotation.y = t*(c.userData.level+1)*0.2;
+                        // Fade out as collapse
+                        c.material.opacity = currentR/c.userData.radius * 0.4;
+                    });
+                    
+                    // Entropy inward spiral
+                    for(let i=0; i<pCount; i++) {
+                        pPos[i*3] += pVel[i].x;
+                        pPos[i*3+1] += pVel[i].y;
+                        pPos[i*3+2] += pVel[i].z;
+                        const dist = Math.sqrt(pPos[i*3]**2 + pPos[i*3+1]**2 + pPos[i*3+2]**2);
+                        if(dist < 0.5) {
+                            // Reset
+                            const theta = Math.random()*Math.PI*2;
+                            const phi = Math.acos(2*Math.random()-1);
+                            const r = 13;
+                            pPos[i*3] = r*Math.sin(phi)*Math.cos(theta);
+                            pPos[i*3+1] = r*Math.sin(phi)*Math.sin(theta);
+                            pPos[i*3+2] = r*Math.cos(phi);
+                            pVel[i] = {x:-pPos[i*3]*0.01, y:-pPos[i*3+1]*0.01, z:-pPos[i*3+2]*0.01};
+                        }
+                    }
+                    pGeo.attributes.position.needsUpdate = true;
+                    
+                    void_.rotation.x = t*0.5;
+                    void_.rotation.y = t*0.7;
+                });
+                this.addHitbox(void_, "Kollaps", "Entropie-Reaktion");
+            },
+
+            sceneDNA: function() { // DNA Double Helix (C12 Transformation)
+                const grp = new THREE.Group();
+                // Double Helix Structure
+                const helixPoints1 = [];
+                const helixPoints2 = [];
+                const basePairs = [];
+                const segments = 50;
+                
+                for(let i=0; i<segments; i++) {
+                    const t = i/segments;
+                    const y = t*10 - 5;
+                    const angle = t*Math.PI*4; // 2 full turns
+                    const r = 1;
+                    
+                    // Strand 1
+                    const p1 = new THREE.Mesh(
+                        new THREE.SphereGeometry(0.1, 8, 8),
+                        new THREE.MeshBasicMaterial({color:0x00ffff})
+                    );
+                    p1.position.set(Math.cos(angle)*r, y, Math.sin(angle)*r);
+                    helixPoints1.push(p1);
+                    grp.add(p1);
+                    
+                    // Strand 2 (opposite)
+                    const p2 = new THREE.Mesh(
+                        new THREE.SphereGeometry(0.1, 8, 8),
+                        new THREE.MeshBasicMaterial({color:0xff00ff})
+                    );
+                    p2.position.set(Math.cos(angle+Math.PI)*r, y, Math.sin(angle+Math.PI)*r);
+                    helixPoints2.push(p2);
+                    grp.add(p2);
+                    
+                    // Base Pair Connection
+                    if(i % 3 === 0) { // Every 3rd for clarity
+                        const lineGeo = new THREE.BufferGeometry();
+                        lineGeo.setAttribute('position', new THREE.BufferAttribute(
+                            new Float32Array([
+                                p1.position.x, p1.position.y, p1.position.z,
+                                p2.position.x, p2.position.y, p2.position.z
+                            ]), 3
+                        ));
+                        const line = new THREE.Line(lineGeo, new THREE.LineBasicMaterial({color:0xffffff, transparent:true, opacity:0.3}));
+                        basePairs.push(line);
+                        grp.add(line);
+                    }
+                }
+                
+                // Backbone Lines
+                const backbone1Geo = new THREE.BufferGeometry();
+                const bb1Pos = [];
+                helixPoints1.forEach(p => bb1Pos.push(p.position.x, p.position.y, p.position.z));
+                backbone1Geo.setAttribute('position', new THREE.Float32BufferAttribute(bb1Pos, 3));
+                const backbone1 = new THREE.Line(backbone1Geo, new THREE.LineBasicMaterial({color:0x00ffff, transparent:true, opacity:0.5}));
+                grp.add(backbone1);
+                
+                const backbone2Geo = new THREE.BufferGeometry();
+                const bb2Pos = [];
+                helixPoints2.forEach(p => bb2Pos.push(p.position.x, p.position.y, p.position.z));
+                backbone2Geo.setAttribute('position', new THREE.Float32BufferAttribute(bb2Pos, 3));
+                const backbone2 = new THREE.Line(backbone2Geo, new THREE.LineBasicMaterial({color:0xff00ff, transparent:true, opacity:0.5}));
+                grp.add(backbone2);
+                
+                // Light Emission (Bio-Photons)
+                const photonGeo = new THREE.BufferGeometry();
+                const photonPos = new Float32Array(100*3);
+                const photonBases = [];
+                for(let i=0; i<100; i++) {
+                    photonBases.push({y: Math.random()*10-5, offset: Math.random()*Math.PI*2, speed: 0.5+Math.random()*0.5});
+                }
+                photonGeo.setAttribute('position', new THREE.BufferAttribute(photonPos,3));
+                const photons = new THREE.Points(photonGeo, new THREE.PointsMaterial({color:0xffffff, size:0.08, transparent:true, opacity:0.7}));
+                grp.add(photons);
+                
+                this.scene.add(grp);
+                this.animatables.push(t => {
+                    grp.rotation.y = t*0.1;
+                    
+                    // Pulse animation
+                    helixPoints1.forEach((p, i) => {
+                        p.scale.setScalar(1 + Math.sin(t*2 + i*0.2)*0.2);
+                    });
+                    helixPoints2.forEach((p, i) => {
+                        p.scale.setScalar(1 + Math.sin(t*2 + i*0.2 + Math.PI)*0.2);
+                    });
+                    
+                    // Bio-photon emission
+                    photonBases.forEach((b, i) => {
+                        const angle = t*b.speed + b.offset;
+                        const r = 1.5 + Math.sin(t*2+b.offset)*0.3;
+                        photonPos[i*3] = Math.cos(angle)*r;
+                        photonPos[i*3+1] = b.y;
+                        photonPos[i*3+2] = Math.sin(angle)*r;
+                    });
+                    photonGeo.attributes.position.needsUpdate = true;
+                });
+                this.addHitbox(grp, "DNA", "Kristalline Helix");
+            },
+
+            sceneGeneric: function(col, type) {
+                const m = new THREE.Mesh(new THREE.IcosahedronGeometry(2,1), new THREE.MeshBasicMaterial({color:col, wireframe:true}));
+                this.scene.add(m);
+                this.animatables.push(t => m.rotation.y = t*0.2);
+            },
+
+            // --- UTILS ---
+            createStarfield: function() {
+                const g = new THREE.BufferGeometry();
+                const p = []; for(let i=0;i<3000;i++) p.push((Math.random()-0.5)*100, (Math.random()-0.5)*100, (Math.random()-0.5)*100);
+                g.setAttribute('position', new THREE.Float32BufferAttribute(p,3));
+                this.scene.add(new THREE.Points(g, new THREE.PointsMaterial({color:0xffffff, size:0.05, transparent:true, opacity:0.4})));
+            },
+            addHitbox: function(obj, t, d) {
+                const h = new THREE.Mesh(new THREE.SphereGeometry(2), new THREE.MeshBasicMaterial({visible:false}));
+                h.position.copy(obj.position); if(obj.parent!==this.scene) h.position.add(obj.parent.position);
+                h.userData={title:t, desc:d};
+                this.scene.add(h); this.hitboxes.push(h);
+            },
+            clearScene: function() {
+                while(this.scene.children.length>0) this.scene.remove(this.scene.children[0]);
+                this.animatables=[]; this.hitboxes=[];
+            },
+
+            // --- UI / MODALS ---
+            offlineMode: false,
+            
+            toggleOfflineMode: function(enabled) {
+                this.offlineMode = enabled;
+                // Sync both checkboxes
+                document.getElementById('offline-mode-info').checked = enabled;
+                document.getElementById('offline-mode-archive').checked = enabled;
+                // Rebuild lists
+                this.buildArchiveList();
+                if(document.getElementById('info-modal').classList.contains('active')) {
+                    this.openInfo();
+                }
+            },
+            
+            getArchiveUrl: function(url) {
+                if(!this.offlineMode) return url;
+                
+                // Special handling for different types
+                if(url.includes('youtube.com')) {
+                    // YouTube doesn't work well with archive.org, return original
+                    return url;
+                } else if(url.includes('researchgate.net')) {
+                    // ResearchGate blocks archive.org, try to get direct PDF link or original
+                    return url;
+                } else if(url.includes('pubmed.ncbi.nlm.nih.gov')) {
+                    // PubMed works better with original links
+                    return url;
+                } else if(url.includes('.pdf')) {
+                    // Direct PDFs usually work with archive.org
+                    return 'https://web.archive.org/web/' + url;
+                } else {
+                    // For other URLs, use archive.org with latest snapshot
+                    return 'https://web.archive.org/web/' + url;
+                }
+            },
+            
+            buildArchiveList: function() {
+                const ul = document.getElementById('archive-list');
+                ul.innerHTML = '';
+                SOURCES.forEach((s, i) => {
+                    let title = s;
+                    
+                    // Extract meaningful title from URL
+                    if(s.includes('youtube.com/watch')) {
+                        // Specific YouTube video titles
+                        if(s.includes('OjTwwM3HhcI')) title = '369 Code: Universal Pattern Explained';
+                        else if(s.includes('l4NJvUurvHE')) title = 'Sacred Geometry & Tesla\'s 369';
+                        else if(s.includes('8Wfim7mDE3Q')) title = 'Frequency & Vibration Science';
+                        else if(s.includes('lZL-CS-VYpY')) title = 'Cymatics: Sound Made Visible';
+                        else if(s.includes('IT3tAQR0VbU')) title = 'Ancient Knowledge & Sacred Math';
+                        else if(s.includes('6OLkfO9eIRY')) title = 'Nikola Tesla 369 Theory Deep Dive';
+                        else if(s.includes('Tl7Xl6eqb-M')) title = 'Merkaba & Sacred Geometry';
+                        else if(s.includes('vdSvf9QuqPY')) title = 'Vortex Mathematics Explained';
+                        else if(s.includes('hIjxbV7pDlc')) title = 'The Power of 432 Hz Music';
+                        else if(s.includes('nTkyeKtAIf4')) title = 'Quantum Physics & Consciousness';
+                        else if(s.includes('D-MyT1Px2Jg')) title = 'Morphic Resonance & Fields';
+                        else if(s.includes('oM37othNNPI')) title = 'Kabbalah & Sacred Systems';
+                        else if(s.includes('mTeZD8rsiTs')) title = 'Vortex Math Critique: Number Theory';
+                        else title = 'YouTube Video: ' + s.split('v=')[1]?.substring(0, 11) || 'Video';
+                    } else if(s.includes('youtube.com/@')) {
+                        // YouTube channel names
+                        if(s.includes('autodidactic999')) title = 'Autodidactic (Channel)';
+                        else if(s.includes('MindUnveiled')) title = 'Mind Unveiled (Channel)';
+                        else title = 'YouTube Channel: ' + s.split('@')[1] || 'Channel';
+                    } else if(s.includes('odysee.com/@')) {
+                        title = 'Odysee Channel: ' + s.split('@')[1]?.split(':')[0] || 'Channel';
+                    } else if(s.includes('claude.ai/share')) {
+                        title = 'Claude AI Recherche';
+                    } else if(s.includes('amasci.com')) {
+                        title = 'Grebennikov CSE Research';
+                    } else if(s.includes('thomastownsendbrown.com')) {
+                        title = 'Thomas Townsend Brown Archive';
+                    } 
+                    // Academic Sources
+                    else if(s.includes('arxiv.org')) {
+                        title = 'arXiv: Properties of the Digital Root (Cardoso & Quadros)';
+                    } else if(s.includes('iosrjournals.org')) {
+                        title = 'IOSR Journal: Digital Roots and Properties';
+                    } else if(s.includes('medium.com/predict')) {
+                        title = 'Medium: Tesla 3-6-9 Theory Analysis';
+                    } else if(s.includes('scribd.com') && s.includes('Pauli-Jung')) {
+                        title = 'Atom and Archetype: Pauli/Jung Letters';
+                    } else if(s.includes('gnosis.study')) {
+                        title = 'On the Origin of the World: Gnostic Physics';
+                    } else if(s.includes('researchgate.net') && s.includes('Fine_Structure')) {
+                        title = 'ResearchGate: Mysticism & Fine Structure Constant';
+                    } else if(s.includes('researchgate.net') && s.includes('synchronicity')) {
+                        title = 'Beyond Synchronicity: Jung & Pauli Worldview';
+                    } else if(s.includes('semanticscholar.org')) {
+                        title = 'String Theory & 10 Sefirot Comparison';
+                    } else if(s.includes('cris.tau.ac.il')) {
+                        title = 'Moshe Idel\'s Phenomenology & Sources';
+                    } else if(s.includes('researchgate.net') && s.includes('sefirot')) {
+                        title = 'Kabbalah as Cybernetic System';
+                    } else if(s.includes('dna.caltech.edu') && s.includes('turing')) {
+                        title = 'Alan Turing: Chemical Basis of Morphogenesis';
+                    } else if(s.includes('pnas.org')) {
+                        title = 'PNAS: Experimental Confirmation of Turing Theory';
+                    } else if(s.includes('monoskop.org') && s.includes('Bertalanffy')) {
+                        title = 'General System Theory (von Bertalanffy)';
+                    } else if(s.includes('sheldrake.org')) {
+                        title = 'Rupert Sheldrake: Morphic Resonance Papers';
+                    } else if(s.includes('pubmed.ncbi.nlm.nih.gov')) {
+                        title = 'PubMed: 432 Hz Music Effect on Anxiety';
+                    } else if(s.includes('researchgate.net') && s.includes('528_Hz')) {
+                        title = '528 Hz Effects on Brain Cell Survival';
+                    } else if(s.includes('monoskop.org') && s.includes('Jenny')) {
+                        title = 'Hans Jenny: Cymatics Study';
+                    } else if(s.includes('researchgate.net') && s.includes('emergency_nurses')) {
+                        title = '432 Hz vs 440 Hz in Clinical Study';
+                    } else {
+                        // Generic: show domain
+                        try {
+                            const domain = new URL(s).hostname.replace('www.', '');
+                            title = domain.charAt(0).toUpperCase() + domain.slice(1);
+                        } catch(e) {
+                            title = s.substring(0, 50) + '...';
+                        }
+                    }
+                    
+                    const archiveUrl = this.getArchiveUrl(s);
+                    
+                    // Determine if archive is likely to work
+                    let isArchiveWorking = true;
+                    if(this.offlineMode) {
+                        if(s.includes('youtube.com') || s.includes('researchgate.net') || s.includes('pubmed.ncbi.nlm.nih.gov')) {
+                            isArchiveWorking = false;
+                        }
+                    }
+                    
+                    const archiveBadge = this.offlineMode && isArchiveWorking ? '<span class="archive-badge">ARCHIVE</span>' : '';
+                    const warningBadge = this.offlineMode && !isArchiveWorking ? '<span class="archive-badge" style="background: #ff3366;">LIVE</span>' : '';
+                    
+                    ul.innerHTML += `<li><a href="${archiveUrl}" target="_blank">${title}</a>${archiveBadge}${warningBadge}</li>`;
+                });
+            },
+            openInfo: function() {
+                const d = CHAPTERS[this.currentIdx];
+                document.getElementById('info-title').innerText = d.title;
+                document.getElementById('info-desc').innerText = d.desc;
+                const ul = document.getElementById('info-sources'); ul.innerHTML = '';
+                d.src.forEach(idx => {
+                    if(SOURCES[idx]) {
+                        const url = SOURCES[idx];
+                        let title = url;
+                        
+                        // Extract meaningful title from URL
+                        if(url.includes('youtube.com/watch')) {
+                            // Specific YouTube video titles
+                            if(url.includes('OjTwwM3HhcI')) title = '369 Code: Universal Pattern Explained';
+                            else if(url.includes('l4NJvUurvHE')) title = 'Sacred Geometry & Tesla\'s 369';
+                            else if(url.includes('8Wfim7mDE3Q')) title = 'Frequency & Vibration Science';
+                            else if(url.includes('lZL-CS-VYpY')) title = 'Cymatics: Sound Made Visible';
+                            else if(url.includes('IT3tAQR0VbU')) title = 'Ancient Knowledge & Sacred Math';
+                            else if(url.includes('6OLkfO9eIRY')) title = 'Nikola Tesla 369 Theory Deep Dive';
+                            else if(url.includes('Tl7Xl6eqb-M')) title = 'Merkaba & Sacred Geometry';
+                            else if(url.includes('vdSvf9QuqPY')) title = 'Vortex Mathematics Explained';
+                            else if(url.includes('hIjxbV7pDlc')) title = 'The Power of 432 Hz Music';
+                            else if(url.includes('nTkyeKtAIf4')) title = 'Quantum Physics & Consciousness';
+                            else if(url.includes('D-MyT1Px2Jg')) title = 'Morphic Resonance & Fields';
+                            else if(url.includes('oM37othNNPI')) title = 'Kabbalah & Sacred Systems';
+                            else if(url.includes('mTeZD8rsiTs')) title = 'Vortex Math Critique: Number Theory';
+                            else title = 'YouTube Video: ' + url.split('v=')[1]?.substring(0, 11) || 'Video';
+                        } else if(url.includes('youtube.com/@')) {
+                            // YouTube channel names
+                            if(url.includes('autodidactic999')) title = 'Autodidactic (Channel)';
+                            else if(url.includes('MindUnveiled')) title = 'Mind Unveiled (Channel)';
+                            else title = 'YouTube Channel: ' + url.split('@')[1] || 'Channel';
+                        } else if(url.includes('odysee.com/@')) {
+                            title = 'Odysee Channel: ' + url.split('@')[1]?.split(':')[0] || 'Channel';
+                        } else if(url.includes('claude.ai/share')) {
+                            title = 'Claude AI Recherche';
+                        } else if(url.includes('amasci.com')) {
+                            title = 'Grebennikov CSE Research';
+                        } else if(url.includes('thomastownsendbrown.com')) {
+                            title = 'Thomas Townsend Brown Archive';
+                        } 
+                        // Academic Sources
+                        else if(url.includes('arxiv.org')) {
+                            title = 'arXiv: Properties of the Digital Root (Cardoso & Quadros)';
+                        } else if(url.includes('iosrjournals.org')) {
+                            title = 'IOSR Journal: Digital Roots and Properties';
+                        } else if(url.includes('medium.com/predict')) {
+                            title = 'Medium: Tesla 3-6-9 Theory Analysis';
+                        } else if(url.includes('scribd.com') && url.includes('Pauli-Jung')) {
+                            title = 'Atom and Archetype: Pauli/Jung Letters';
+                        } else if(url.includes('gnosis.study')) {
+                            title = 'On the Origin of the World: Gnostic Physics';
+                        } else if(url.includes('researchgate.net') && url.includes('Fine_Structure')) {
+                            title = 'ResearchGate: Mysticism & Fine Structure Constant';
+                        } else if(url.includes('researchgate.net') && url.includes('synchronicity')) {
+                            title = 'Beyond Synchronicity: Jung & Pauli Worldview';
+                        } else if(url.includes('semanticscholar.org')) {
+                            title = 'String Theory & 10 Sefirot Comparison';
+                        } else if(url.includes('cris.tau.ac.il')) {
+                            title = 'Moshe Idel\'s Phenomenology & Sources';
+                        } else if(url.includes('researchgate.net') && url.includes('sefirot')) {
+                            title = 'Kabbalah as Cybernetic System';
+                        } else if(url.includes('dna.caltech.edu') && url.includes('turing')) {
+                            title = 'Alan Turing: Chemical Basis of Morphogenesis';
+                        } else if(url.includes('pnas.org')) {
+                            title = 'PNAS: Experimental Confirmation of Turing Theory';
+                        } else if(url.includes('monoskop.org') && url.includes('Bertalanffy')) {
+                            title = 'General System Theory (von Bertalanffy)';
+                        } else if(url.includes('sheldrake.org')) {
+                            title = 'Rupert Sheldrake: Morphic Resonance Papers';
+                        } else if(url.includes('pubmed.ncbi.nlm.nih.gov')) {
+                            title = 'PubMed: 432 Hz Music Effect on Anxiety';
+                        } else if(url.includes('researchgate.net') && url.includes('528_Hz')) {
+                            title = '528 Hz Effects on Brain Cell Survival';
+                        } else if(url.includes('monoskop.org') && url.includes('Jenny')) {
+                            title = 'Hans Jenny: Cymatics Study';
+                        } else if(url.includes('researchgate.net') && url.includes('emergency_nurses')) {
+                            title = '432 Hz vs 440 Hz in Clinical Study';
+                        } else {
+                            // Generic: show domain
+                            try {
+                                const domain = new URL(url).hostname.replace('www.', '');
+                                title = domain.charAt(0).toUpperCase() + domain.slice(1);
+                            } catch(e) {
+                                title = url.substring(0, 50) + '...';
+                            }
+                        }
+                        
+                        const archiveUrl = this.getArchiveUrl(url);
+                        
+                        // Determine if archive is likely to work
+                        let isArchiveWorking = true;
+                        if(this.offlineMode) {
+                            if(url.includes('youtube.com') || url.includes('researchgate.net') || url.includes('pubmed.ncbi.nlm.nih.gov')) {
+                                isArchiveWorking = false;
+                            }
+                        }
+                        
+                        const archiveBadge = this.offlineMode && isArchiveWorking ? '<span class="archive-badge">ARCHIVE</span>' : '';
+                        const warningBadge = this.offlineMode && !isArchiveWorking ? '<span class="archive-badge" style="background: #ff3366;">LIVE</span>' : '';
+                        
+                        ul.innerHTML += `<li><a href="${archiveUrl}" target="_blank">${title}</a>${archiveBadge}${warningBadge}</li>`;
+                    }
+                });
+                document.getElementById('info-modal').classList.add('active');
+            },
+            openArchive: function() {
+                document.getElementById('archive-modal').classList.add('active');
+            },
+            openExplanation: function() {
+                document.getElementById('explanation-modal').classList.add('active');
+            },
+            closeModal: function() { document.querySelectorAll('.modal-overlay').forEach(e=>e.classList.remove('active')); },
+            returnToDash: function() { 
+                document.getElementById('dashboard').classList.remove('hidden');
+                document.getElementById('hud').classList.remove('visible');
+                this.clearScene(); this.createStarfield();
+            },
+            setupInteractions: function() {
+                 const m = document.getElementById('info-modal');
+                 const tt = document.getElementById('tooltip');
+                 window.addEventListener('mousemove', e => {
+                     if(m.classList.contains('active')) return;
+                     this.mouse.x=(e.clientX/window.innerWidth)*2-1; this.mouse.y=-(e.clientY/window.innerHeight)*2+1;
+                     this.raycaster.setFromCamera(this.mouse, this.camera);
+                     const hits = this.raycaster.intersectObjects(this.hitboxes);
+                     if(hits.length>0) {
+                         document.body.style.cursor='pointer';
+                         tt.style.opacity=1; tt.style.left=e.clientX+'px'; tt.style.top=e.clientY+'px';
+                         tt.innerText = hits[0].object.userData.title;
+                     } else { document.body.style.cursor='default'; tt.style.opacity=0; }
+                 });
+                 window.addEventListener('click', e => {
+                     // Check if clicking close button or modal overlay
+                     if(e.target.classList.contains('m-close') || e.target.closest('.m-close')) {
+                         this.closeModal();
+                         return;
+                     }
+                     if(e.target.classList.contains('modal-overlay')) {
+                         this.closeModal();
+                         return;
+                     }
+                     
+                     if(e.target.closest('#dashboard') || e.target.closest('.nav-zone') || e.target.closest('.top-bar') || e.target.closest('#sidebar') || e.target.closest('.modal')) return;
+                     this.raycaster.setFromCamera(this.mouse, this.camera);
+                     const hits = this.raycaster.intersectObjects(this.hitboxes);
+                     if(hits.length>0) {
+                         const d = hits[0].object.userData;
+                         document.getElementById('info-title').innerText = d.title;
+                         document.getElementById('info-desc').innerText = d.desc;
+                         document.getElementById('info-sources').innerHTML='';
+                         m.classList.add('active');
+                     }
+                 });
+            },
+            
+            setCamera: function(v, btn) {
+                document.querySelectorAll('.view-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
+                if(v==='main') { this.controls.minDistance=5; this.camera.position.set(0,2,16); }
+                if(v==='a') { this.controls.minDistance=2; this.camera.position.set(0,5,0); }
+                if(v==='b') { this.controls.minDistance=0.5; this.camera.position.set(2,1,2); }
+            },
+            prev: function() { this.loadScene((this.currentIdx-1+CHAPTERS.length)%CHAPTERS.length); },
+            next: function() { this.loadScene((this.currentIdx+1)%CHAPTERS.length); },
+
+            animate: function() {
+                requestAnimationFrame(() => this.animate());
+                const dt = this.clock.getDelta();
+                const t = this.clock.getElapsedTime();
+                this.controls.update();
+                this.animatables.forEach(f => f(t));
+                this.composer.render();
+            }
+        };
+
+        // --- MUSIC PLAYER ENGINE ---
+        const musicPlayer = {
+            audio: null,
+            isPlaying: false,
+            isMuted: false,
+            
+            init: function() {
+                // Dropbox direct download link
+                this.audio = new Audio('https://www.dropbox.com/scl/fi/vqkd4gcj8lyo2w11f7w1j/Systemarchitektur-3-6-9-Eine-integrative-Exegese-der-Schnittstellen-zwischen-Gnostischer-Physik-Kabbalistischer-Kybernetik-und-Morphogenetik.mp3?rlkey=0ak4h1qv07m6llsuwvlpp07i8&st=863idj4j&dl=1');
+                this.audio.loop = true;
+                this.audio.volume = 0.7;
+                this.audio.preload = 'auto';
+                
+                // Error handler
+                this.audio.addEventListener('error', (e) => {
+                    console.error('Audio load error:', e);
+                    document.getElementById('play-pause-btn').textContent = '✖';
+                    document.getElementById('play-pause-btn').style.color = '#ff3366';
+                });
+                
+                this.audio.addEventListener('loadedmetadata', () => {
+                    console.log('Audio loaded successfully!');
+                    document.getElementById('duration-time').textContent = this.formatTime(this.audio.duration);
+                });
+                
+                this.audio.addEventListener('timeupdate', () => {
+                    const progress = (this.audio.currentTime / this.audio.duration) * 100;
+                    document.getElementById('progress-bar').style.width = progress + '%';
+                    document.getElementById('current-time').textContent = this.formatTime(this.audio.currentTime);
+                });
+                
+                this.audio.addEventListener('canplaythrough', () => {
+                    console.log('Audio ready to play');
+                });
+            },
+            
+            formatTime: function(seconds) {
+                if (isNaN(seconds)) return '0:00';
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return mins + ':' + (secs < 10 ? '0' : '') + secs;
+            },
+            
+            play: function() {
+                const playPromise = this.audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        this.isPlaying = true;
+                        document.getElementById('play-pause-btn').textContent = '⏸';
+                        console.log('Audio playing');
+                    }).catch(error => {
+                        console.error('Play failed:', error);
+                        this.isPlaying = false;
+                        document.getElementById('play-pause-btn').textContent = '▶';
+                    });
+                }
+            },
+            
+            pause: function() {
+                this.audio.pause();
+                this.isPlaying = false;
+                document.getElementById('play-pause-btn').textContent = '▶';
+            },
+            
+            togglePlay: function() {
+                if (this.isPlaying) {
+                    this.pause();
+                } else {
+                    this.play();
+                }
+            },
+            
+            toggleMute: function() {
+                this.isMuted = !this.isMuted;
+                this.audio.muted = this.isMuted;
+                document.getElementById('mute-btn').textContent = this.isMuted ? '🔇' : '🔊';
+            },
+            
+            seek: function(event) {
+                const rect = event.currentTarget.getBoundingClientRect();
+                const clickX = event.clientX - rect.left;
+                const percent = clickX / rect.width;
+                this.audio.currentTime = percent * this.audio.duration;
+            },
+            
+            setVolume: function(event) {
+                const rect = event.currentTarget.getBoundingClientRect();
+                const clickX = event.clientX - rect.left;
+                const percent = Math.max(0, Math.min(1, clickX / rect.width));
+                this.audio.volume = percent;
+                document.getElementById('volume-bar').style.width = (percent * 100) + '%';
+            }
+        };
+
+        // --- AUTO TRANSLATION ---
+        function autoTranslate() {
+            const userLang = navigator.language || navigator.userLanguage;
+            const langCode = userLang.split('-')[0]; // 'en-US' -> 'en'
+            
+            // If not German, trigger Google Translate
+            if (langCode !== 'de') {
+                // Add Google Translate widget
+                const script = document.createElement('script');
+                script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+                document.head.appendChild(script);
+                
+                window.googleTranslateElementInit = function() {
+                    new google.translate.TranslateElement({
+                        pageLanguage: 'de',
+                        includedLanguages: 'en,es,fr,it,pt,ru,zh-CN,ja,ar,hi',
+                        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                        autoDisplay: false
+                    }, 'google_translate_element');
+                    
+                    // Auto-trigger translation after a short delay
+                    setTimeout(() => {
+                        const selectBox = document.querySelector('.goog-te-combo');
+                        if (selectBox) {
+                            selectBox.value = langCode;
+                            selectBox.dispatchEvent(new Event('change'));
+                        }
+                    }, 500);
+                };
+                
+                // Add hidden container for translate widget
+                const container = document.createElement('div');
+                container.id = 'google_translate_element';
+                container.style.cssText = 'position:fixed;bottom:10px;right:10px;z-index:9999;opacity:0.7;';
+                document.body.appendChild(container);
+            }
+        }
+
+        window.app = app;
+        window.musicPlayer = musicPlayer;
+        
+        // Initialize app
+        try {
+            console.log('[369] Initializing app...');
+            app.init();
+            console.log('[369] App initialized successfully');
+            
+            // Auto-translate
+            try {
+                autoTranslate();
+            } catch (err) {
+                console.warn('[369] Translation failed:', err);
+            }
+            
+            // Hide loading screen after short delay
+            setTimeout(() => {
+                hideLoading();
+                console.log('[369] Website fully loaded');
+            }, 1000);
+            
+        } catch (err) {
+            console.error('[369] Initialization failed:', err);
+            showError(`Initialisierung fehlgeschlagen: ${err.message}`);
+        }
+    </script>
+    
+    <!-- COPYRIGHT FOOTER -->
+    <div style="position: fixed; bottom: 0; left: 0; right: 0; background: rgba(3, 3, 5, 0.95); padding: 8px 20px; text-align: center; font-size: 0.75rem; color: #666; border-top: 1px solid rgba(0, 243, 255, 0.2); z-index: 100;">
+        © 2025 <span style="color: var(--gnosis);">Nicolai Becker</span> | Alle Rechte vorbehalten | <a href="https://linktr.ee/AEiOU.official" target="_blank" style="color: var(--science); text-decoration: none;">AEiOU.official</a>
+    </div>
+</body>
+</html>
