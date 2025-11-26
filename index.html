@@ -6,6 +6,18 @@
     <meta name="google" content="notranslate">
     <meta name="author" content="Nicolai Becker">
     <meta name="copyright" content="© 2025 Nicolai Becker. All Rights Reserved.">
+    
+    <!-- SEO & Social Media -->
+    <meta name="keywords" content="3-6-9, Gnostische Physik, Kabbala, Morphogenetik, Tesla, Systemarchitektur">
+    <meta property="og:title" content="3-6-9 | Systemarchitektur der Realität">
+    <meta property="og:description" content="Interaktive 3D-Visualisierung der Gnostischen Physik, Kabbala und Morphogenetik.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <!-- Security & Performance -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
     <title>3-6-9 | Systemarchitektur</title>
     <meta name="description" content="Interaktive 3D-Visualisierung der Gnostischen Physik, Kabbala und Morphogenetik.">
     <style>
@@ -45,8 +57,45 @@
         
         /* Mobile Performance Optimization */
         @media (max-width: 768px) {
+            body { font-size: 14px; }
             .note, .fractal { display: none !important; } /* Disable animations on mobile */
             #canvas-container { will-change: auto; }
+            .brand h1 { font-size: 3rem; letter-spacing: 10px; }
+            .brand .sub { font-size: 0.7rem; letter-spacing: 4px; }
+            .grid { grid-template-columns: 1fr; gap: 15px; padding: 0 10px; }
+            .card { padding: 15px; }
+            .modal { max-width: 95%; width: 95%; max-height: 90vh; }
+            .m-header { padding: 15px; }
+            .m-content { padding: 20px; font-size: 0.9rem; }
+            #sidebar { width: 100%; position: relative; right: auto; top: auto; bottom: auto;
+                       padding: 10px; display: flex; flex-direction: row; gap: 10px; overflow-x: auto;
+                       align-items: stretch; }
+            #sidebar.minimized { 
+                top: 45px;
+                right: 10px;
+                width: 150px;
+                height: 35px;
+                position: fixed;
+            }
+            .panel { width: 280px; flex-shrink: 0; border-radius: var(--radius-md);
+                    border-right: none; border-top: 3px solid var(--science); 
+                    max-height: 60vh; /* More height on mobile */ }
+            .nav-zone { width: 60px; height: 100px; font-size: 2rem; }
+            .nav-next { right: 60px !important; } /* Keep clear of mobile edge */
+            .scanner-box { padding: 6px 10px; gap: 8px; font-size: 0.85rem; }
+            .scanner-input { width: 140px; font-size: 0.7rem; padding: 3px 8px; }
+            .scanner-result { min-width: 150px; font-size: 0.6rem; }
+            
+            /* Better button sizing on mobile */
+            .view-btn { 
+                padding: 12px 8px !important; 
+                font-size: 0.75rem !important; 
+                white-space: normal !important;
+                line-height: 1.2 !important;
+            }
+            
+            /* Vertical position controls on mobile */
+            .scale-label { font-size: 0.65rem !important; }
         }
         
         /* SCROLLBAR */
@@ -122,7 +171,7 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(3, 3, 5, 0.85);
             display: flex; flex-direction: column; align-items: center;
-            padding: 40px 20px; overflow-y: auto; pointer-events: auto;
+            padding: 65px 20px 40px; overflow-y: auto; pointer-events: auto;
             transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 100;
         }
@@ -194,73 +243,187 @@
 
         /* GEMATRIA SCANNER */
         .scanner-box {
-            background: rgba(10, 10, 20, 0.6); border: 1px solid rgba(157, 0, 255, 0.3);
-            padding: 12px 20px;
-            border-radius: var(--radius-md); text-align: center; width: 100%; max-width: 600px;
-            margin-bottom: 30px; backdrop-filter: blur(10px);
-            box-shadow: 0 2px 8px rgba(157, 0, 255, 0.15);
-            position: relative;
+            background: rgba(3, 3, 5, 0.95); 
+            border-top: 1px solid rgba(157, 0, 255, 0.2);
+            border-bottom: 1px solid rgba(157, 0, 255, 0.2);
+            padding: 8px 20px;
+            text-align: center; 
+            width: 100%;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
         }
-        .scanner-box::before {
-            content: ''; position: absolute; inset: -1px; border-radius: var(--radius-md);
-            background: linear-gradient(135deg, rgba(157, 0, 255, 0.1), rgba(0, 243, 255, 0.1));
-            z-index: -1; opacity: 0.2; filter: blur(5px);
+        .scanner-label {
+            font-size: 0.65rem; 
+            color: #666; 
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         .scanner-input {
-            background: rgba(157, 0, 255, 0.03); border: none; border-bottom: 1px solid rgba(157, 0, 255, 0.4);
-            color: #fff; font-size: 1rem; font-family: var(--font-mono); text-align: center;
-            width: 100%; padding: 8px; margin-bottom: 6px; text-transform: uppercase;
-            transition: all 0.3s ease; border-radius: var(--radius-sm);
+            background: rgba(157, 0, 255, 0.05); 
+            border: 1px solid rgba(157, 0, 255, 0.2);
+            color: #aaa; 
+            font-size: 0.75rem; 
+            font-family: var(--font-mono); 
+            text-align: center;
+            width: 180px; 
+            padding: 4px 10px; 
+            text-transform: uppercase;
+            transition: all 0.3s ease; 
+            border-radius: var(--radius-sm);
         }
         .scanner-input:focus {
-            background: rgba(157, 0, 255, 0.08);
-            border-bottom-color: var(--science);
-            box-shadow: 0 2px 8px rgba(157, 0, 255, 0.2);
+            background: rgba(157, 0, 255, 0.1);
+            border-color: rgba(157, 0, 255, 0.4);
+            color: #fff;
+            outline: none;
         }
-        .scanner-result { font-size: 0.75rem; color: rgba(157, 0, 255, 0.8); min-height: 16px; letter-spacing: 0.5px; }
+        .scanner-result { 
+            font-size: 0.65rem; 
+            color: rgba(157, 0, 255, 0.6); 
+            font-family: var(--font-mono);
+            min-width: 200px;
+        }
 
         /* --- MUSIC PLAYER --- */
         #music-player {
-            position: fixed; top: 40px; left: 40px; z-index: 10000;
-            background: rgba(10, 10, 20, 0.9); border: 1px solid var(--science);
-            border-radius: var(--radius-md); padding: 15px 20px;
-            backdrop-filter: blur(15px); box-shadow: 0 4px 20px rgba(0, 243, 255, 0.3);
-            width: 300px; display: flex; flex-direction: column; gap: 10px;
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            z-index: 10000;
+            background: rgba(3, 3, 5, 0.98); 
+            border-bottom: 1px solid rgba(0, 243, 255, 0.3);
+            backdrop-filter: blur(20px); 
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.5);
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            gap: 20px;
+            padding: 8px 30px;
+            height: 45px;
+        }
+        @media (max-width: 768px) {
+            #music-player {
+                gap: 10px;
+                padding: 6px 15px;
+                height: 40px;
+            }
         }
         .player-controls {
-            display: flex; align-items: center; gap: 12px;
+            display: flex; align-items: center; gap: 10px;
         }
         .player-btn {
-            background: rgba(0, 243, 255, 0.1); border: 1px solid var(--science);
-            border-radius: var(--radius-sm); padding: 8px 12px; cursor: pointer;
-            color: var(--science); font-family: var(--font-mono); font-size: 0.8rem;
+            background: rgba(0, 243, 255, 0.1); 
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            border-radius: var(--radius-sm); 
+            padding: 4px 10px; 
+            cursor: pointer;
+            color: var(--science); 
+            font-family: var(--font-mono); 
+            font-size: 0.75rem;
             transition: all 0.3s ease;
+            height: 28px;
+            min-width: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        @media (max-width: 768px) {
+            .player-btn { 
+                padding: 3px 8px; 
+                font-size: 0.7rem;
+                height: 24px;
+                min-width: 28px;
+            }
         }
         .player-btn:hover {
-            background: rgba(0, 243, 255, 0.2); box-shadow: 0 0 10px rgba(0, 243, 255, 0.4);
+            background: rgba(0, 243, 255, 0.2); 
+            border-color: var(--science);
+            box-shadow: 0 0 8px rgba(0, 243, 255, 0.3);
         }
         .player-timeline {
-            width: 100%; height: 6px; background: rgba(0, 243, 255, 0.2);
-            border-radius: 3px; cursor: pointer; position: relative; overflow: hidden;
+            flex: 1;
+            max-width: 400px;
+            height: 4px; 
+            background: rgba(0, 243, 255, 0.2);
+            border-radius: 2px; 
+            cursor: pointer; 
+            position: relative; 
+            overflow: hidden;
+        }
+        @media (max-width: 768px) {
+            .player-timeline {
+                max-width: 150px;
+                height: 3px;
+            }
         }
         .player-progress {
-            height: 100%; background: var(--science); border-radius: 3px;
-            width: 0%; transition: width 0.1s linear;
+            height: 100%; 
+            background: var(--science); 
+            border-radius: 2px;
+            width: 0%; 
+            transition: width 0.1s linear;
         }
         .player-volume {
-            display: flex; align-items: center; gap: 8px;
+            display: flex; 
+            align-items: center; 
+            gap: 6px;
+        }
+        @media (max-width: 768px) {
+            .player-volume { 
+                gap: 4px; 
+            }
         }
         .volume-slider {
-            width: 80px; height: 4px; background: rgba(0, 243, 255, 0.2);
-            border-radius: 2px; cursor: pointer; position: relative;
+            width: 70px; 
+            height: 3px; 
+            background: rgba(0, 243, 255, 0.2);
+            border-radius: 2px; 
+            cursor: pointer; 
+            position: relative;
+        }
+        @media (max-width: 768px) {
+            .volume-slider { width: 50px; }
         }
         .volume-fill {
-            height: 100%; background: var(--science); border-radius: 2px;
-            width: 70%; transition: width 0.1s linear;
+            height: 100%; 
+            background: var(--science); 
+            border-radius: 2px;
+            width: 70%; 
+            transition: width 0.1s linear;
         }
         .player-time {
-            font-size: 0.7rem; color: rgba(0, 243, 255, 0.7);
-            font-family: var(--font-mono); letter-spacing: 0.5px;
+            font-size: 0.65rem; 
+            color: rgba(0, 243, 255, 0.7);
+            font-family: var(--font-mono); 
+            letter-spacing: 0.5px;
+        }
+        @media (max-width: 768px) {
+            .player-time { font-size: 0.6rem; }
+        }
+        .player-track-title {
+            font-size: 0.7rem;
+            color: rgba(0, 243, 255, 0.9);
+            font-family: var(--font-mono);
+            letter-spacing: 1px;
+            margin-right: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        @media (max-width: 768px) {
+            .player-track-title { 
+                font-size: 0.6rem; 
+                margin-right: 10px;
+                max-width: 120px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
         }
 
         /* --- HUD (SCENE) --- */
@@ -271,15 +434,25 @@
         #hud.visible { opacity: 1; }
 
         .top-bar {
-            display: flex; justify-content: space-between; align-items: center; padding: 30px 40px;
+            display: flex; justify-content: space-between; align-items: center; padding: 65px 40px 30px;
             background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); pointer-events: auto;
         }
         
         .nav-btn {
             display: flex; align-items: center; gap: 10px; cursor: pointer; color: #888; transition: 0.3s;
             font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase;
+            background: rgba(0, 243, 255, 0.1); padding: 10px 15px; border-radius: var(--radius-sm);
+            border: 1px solid rgba(0, 243, 255, 0.2);
         }
-        .nav-btn:hover { color: #fff; text-shadow: 0 0 10px #fff; }
+        .nav-btn:hover { 
+            color: var(--science); text-shadow: 0 0 10px var(--science); 
+            background: rgba(0, 243, 255, 0.2); border-color: var(--science);
+        }
+        @media (max-width: 768px) {
+            .nav-btn { padding: 8px 12px; font-size: 0.7rem; gap: 6px; }
+            .top-bar { padding: 55px 20px 15px; flex-wrap: wrap; }
+            .scene-display { order: -1; width: 100%; margin-bottom: 10px; }
+        }
 
         .scene-display { text-align: center; }
         .scene-id { color: var(--gnosis); font-size: 0.7rem; letter-spacing: 2px; font-family: var(--font-mono); }
@@ -287,18 +460,66 @@
 
         /* SIDEBAR CONTROLS */
         #sidebar {
-            position: absolute; right: 0; top: 100px; bottom: 100px; width: 320px;
-            padding-right: 40px; pointer-events: none;
+            position: absolute; right: 20px; top: 100px; width: 320px;
+            padding: 0;
             display: flex; flex-direction: column; align-items: flex-end; gap: 20px;
+            transition: all 0.5s cubic-bezier(0.2,1,0.3,1);
+            cursor: move; /* Show it's draggable */
         }
-        .panel {
-            background: var(--glass); border: 1px solid var(--border); border-right: 3px solid var(--science);
-            padding: var(--spacing); border-radius: var(--radius-md) 0 0 var(--radius-md); width: 100%; 
-            backdrop-filter: blur(15px);
-            pointer-events: auto; transform: translateX(120%); transition: 0.5s cubic-bezier(0.2,1,0.3,1);
+        
+        /* Minimized state - collapses to thin bar at top */
+        #sidebar.minimized {
+            top: 45px; /* Below music player */
+            height: 40px;
+            width: 200px;
+            cursor: move; /* Still draggable when minimized */
+        }
+        #sidebar.minimized .panel { display: none; }
+        #sidebar.minimized .sidebar-toggle { 
+            width: 100%; 
+            background: var(--glass);
+            border: 1px solid var(--science);
+            border-radius: var(--radius-md);
+            padding: 10px;
+            text-align: center;
             box-shadow: var(--glow-science);
         }
-        #hud.visible .panel { transform: translateX(0); }
+        
+        /* Sidebar toggle button */
+        .sidebar-toggle {
+            background: var(--glass);
+            border: 1px solid var(--science);
+            border-radius: var(--radius-md) 0 0 var(--radius-md);
+            padding: 8px 12px;
+            color: var(--science);
+            cursor: pointer;
+            pointer-events: auto;
+            font-size: 0.75rem;
+            text-align: center;
+            backdrop-filter: blur(15px);
+            transition: all 0.3s;
+            box-shadow: var(--glow-science);
+            width: 100%;
+        }
+        .sidebar-toggle:hover {
+            background: rgba(0, 243, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+        }
+        .sidebar-toggle-icon {
+            font-size: 1rem;
+            margin-right: 5px;
+        }
+        
+        .panel {
+            background: var(--glass); border: 1px solid var(--border); border-right: 3px solid var(--science);
+            padding: var(--spacing); border-radius: var(--radius-md); width: 100%; 
+            backdrop-filter: blur(15px);
+            pointer-events: auto; transition: 0.3s;
+            box-shadow: var(--glow-science);
+            max-height: 40vh; /* Limit height to prevent overlap */
+            overflow-y: auto; /* Scroll if content is too long */
+        }
+        #hud.visible .panel { opacity: 1; }
         
         .dream-panel { border-right-color: var(--gnosis) !important; box-shadow: var(--glow-gnosis) !important; }
 
@@ -405,7 +626,10 @@
         }
         .nav-zone:hover { color: var(--science); text-shadow: 0 0 20px var(--science); }
         .nav-prev { left: 0; background: linear-gradient(to right, rgba(0,0,0,0.6), transparent); }
-        .nav-next { right: 0; background: linear-gradient(to left, rgba(0,0,0,0.6), transparent); }
+        .nav-next { right: 380px; background: linear-gradient(to left, rgba(0,0,0,0.6), transparent); } /* Moved left to avoid sidebar */
+        
+        /* Adjust nav-next when sidebar is minimized */
+        #sidebar.minimized ~ .nav-next { right: 0; }
 
         #tooltip { position: absolute; background: rgba(0,0,0,0.9); border: 1px solid var(--gnosis); color: #fff; padding: 8px 12px; font-size: 0.75rem; pointer-events: none; opacity: 0; z-index: 4000; transform: translate(-50%, -150%); transition: opacity 0.2s; }
 
@@ -423,14 +647,9 @@
 
     </style>
     
-    <!-- THREE.JS - Global Build (works on ALL devices including mobile without modules) -->
-    <script src="https://cdn.jsdelivr.net/npm/three@0.154.0/build/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.154.0/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.154.0/examples/js/postprocessing/EffectComposer.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.154.0/examples/js/postprocessing/RenderPass.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.154.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.154.0/examples/js/shaders/CopyShader.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.154.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+    <!-- THREE.JS - Using working CDN sources -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 </head>
 <body>
 
@@ -465,23 +684,19 @@
         <div class="fractal">❖</div>
     </div>
 
-    <!-- MUSIC PLAYER -->
+    <!-- MUSIC PLAYER - Top Bar -->
     <div id="music-player">
-        <div class="player-controls">
-            <button class="player-btn" id="play-pause-btn" onclick="musicPlayer.togglePlay()">▶</button>
-            <button class="player-btn" id="mute-btn" onclick="musicPlayer.toggleMute()">🔊</button>
-            <span class="player-time" id="current-time">0:00</span>
-            <span class="player-time">/</span>
-            <span class="player-time" id="duration-time">0:00</span>
-        </div>
+        <span class="player-track-title">What is this Site about?</span>
+        <button class="player-btn" id="play-pause-btn" onclick="musicPlayer.togglePlay()">▶</button>
         <div class="player-timeline" onclick="musicPlayer.seek(event)">
             <div class="player-progress" id="progress-bar"></div>
         </div>
-        <div class="player-volume">
-            <span class="player-time" style="font-size: 0.65rem;">VOL</span>
-            <div class="volume-slider" onclick="musicPlayer.setVolume(event)">
-                <div class="volume-fill" id="volume-bar"></div>
-            </div>
+        <span class="player-time" id="current-time">0:00</span>
+        <span class="player-time" style="color: #444;">/</span>
+        <span class="player-time" id="duration-time">0:00</span>
+        <button class="player-btn" id="mute-btn" onclick="musicPlayer.toggleMute()">🔊</button>
+        <div class="volume-slider" onclick="musicPlayer.setVolume(event)">
+            <div class="volume-fill" id="volume-bar"></div>
         </div>
     </div>
 
@@ -492,18 +707,19 @@
                 <h1>3-6-9</h1>
                 <div class="sub">Systemarchitektur der Realität</div>
             </div>
-
-            <div class="scanner-box">
-                <div style="font-size:0.7rem; color:#888; margin-bottom:5px;">GEMATRIA SCANNER (Reichstein System)</div>
-                <input type="text" class="scanner-input" placeholder="NAMEN EINGEBEN" oninput="app.scanName(this.value)">
-                <div class="scanner-result" id="scanner-res"></div>
-            </div>
             
             <div class="grid" id="chapter-grid"></div>
 
             <div style="margin-top: 50px; display: flex; flex-direction: column; gap: 15px; align-items: center;">
                 <button class="view-btn" style="width:auto; padding:15px 30px; text-align:center;" onclick="app.openArchive()">Vollständiges Quellen-Archiv</button>
                 <button class="view-btn" style="width:auto; padding:15px 30px; text-align:center; background: rgba(255, 170, 0, 0.1); border-color: var(--gnosis);" onclick="app.openExplanation()">Wissenschaftliche Exegese (Volltext)</button>
+            </div>
+            
+            <!-- Subtle Gematria Scanner at bottom -->
+            <div class="scanner-box" style="margin-top: 60px;">
+                <span class="scanner-label">Gematria</span>
+                <input type="text" class="scanner-input" placeholder="Name eingeben" oninput="app.scanName(this.value)">
+                <div class="scanner-result" id="scanner-res"></div>
             </div>
         </div>
 
@@ -528,6 +744,11 @@
             <div class="nav-zone nav-next" onclick="app.next()">&#8250;</div>
 
             <div id="sidebar">
+                <div class="sidebar-toggle" onclick="app.toggleSidebar()">
+                    <span class="sidebar-toggle-icon">▼</span>
+                    <span class="sidebar-toggle-text">MENÜ</span>
+                </div>
+                
                 <div class="panel" id="vis-panel">
                     <span class="p-head">VISUALISIERUNG</span>
                     
@@ -540,6 +761,16 @@
                         <div class="view-btn active" onclick="app.setCamera('main', this)">Global (Übersicht)</div>
                         <div class="view-btn" onclick="app.setCamera('a', this)">Makro (Struktur)</div>
                         <div class="view-btn" onclick="app.setCamera('b', this)">Mikro (Detail)</div>
+                    </div>
+                    
+                    <!-- Vertical Position Control -->
+                    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                        <span class="scale-label" style="display: block; margin-bottom: 10px;">VERTIKALE POSITION</span>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <button class="view-btn" onclick="app.moveCamera('up')" style="flex: 1; padding: 10px;">▲ Hoch</button>
+                            <button class="view-btn" onclick="app.moveCamera('down')" style="flex: 1; padding: 10px;">▼ Runter</button>
+                            <button class="view-btn" onclick="app.resetCamera()" style="flex: 1; padding: 10px;">↻ Reset</button>
+                        </div>
                     </div>
                 </div>
                 
@@ -854,6 +1085,15 @@
     </script>
 
     <script>
+        // Immediate execution check
+        console.log('[369] === MAIN SCRIPT EXECUTING ===');
+        
+        // Console Welcome Message
+        console.log('%c3-6-9 Systemarchitektur', 'font-size: 24px; font-weight: bold; color: #00f3ff; text-shadow: 0 0 10px #00f3ff;');
+        console.log('%cGnostische Physik • Kabbala • Morphogenetik', 'font-size: 14px; color: #ffaa00;');
+        console.log('%c© 2025 Nicolai Becker | linktr.ee/AEiOU.official', 'font-size: 12px; color: #888;');
+        console.log('%c━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'color: #00f3ff;');
+        
         // Mobile Detection & Error Handling
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
@@ -965,10 +1205,15 @@
         // --- APP ENGINE ---
         const app = {
             scene: null, camera: null, renderer: null, composer: null, controls: null,
-            clock: new THREE.Clock(), raycaster: new THREE.Raycaster(), mouse: new THREE.Vector2(),
+            clock: null, raycaster: null, mouse: null,
             animatables: [], hitboxes: [], currentIdx: 0, isDreamMode: false,
             
             init: function() {
+                // Initialize THREE-dependent objects here
+                this.clock = new THREE.Clock();
+                this.raycaster = new THREE.Raycaster();
+                this.mouse = new THREE.Vector2();
+                
                 const container = document.getElementById('canvas-container');
                 
                 // Mobile-optimized renderer settings
@@ -994,6 +1239,7 @@
                 this.buildDashboard();
                 this.buildArchiveList();
                 this.setupInteractions();
+                this.initDraggableSidebar();
                 this.animate();
                 musicPlayer.init();
                 window.addEventListener('resize', () => this.onResize());
@@ -1014,25 +1260,13 @@
                     this.controls.rotateSpeed = 0.7; // Slower rotation for touch
                     this.controls.zoomSpeed = 1.2;
                     this.controls.enablePan = false; // Disable pan on mobile (conflicts with scroll)
-                    this.controls.touches = {
-                        ONE: THREE.TOUCH.ROTATE,
-                        TWO: THREE.TOUCH.DOLLY_PAN
-                    };
                     console.log('[369] Mobile touch controls enabled');
                 }
 
-                const renderPass = new THREE.RenderPass(this.scene, this.camera);
-                // Reduce bloom on mobile for performance
-                const bloomStrength = isMobile ? 0.8 : 1.5;
-                const bloomPass = new THREE.UnrealBloomPass(
-                    new THREE.Vector2(window.innerWidth, window.innerHeight),
-                    bloomStrength,
-                    0.4,
-                    0.85
-                );
-                bloomPass.threshold = 0.1; bloomPass.strength = 1.2; bloomPass.radius = 0.5;
-                this.composer = new THREE.EffectComposer(this.renderer);
-                this.composer.addPass(renderPass); this.composer.addPass(bloomPass);
+                // Simplified rendering without bloom for compatibility
+                console.log('[369] Using direct rendering (bloom disabled for compatibility)');
+                this.composer = null; // Disable composer for now
+                
                 this.createStarfield();
             },
 
@@ -1040,7 +1274,9 @@
                 this.camera.aspect = window.innerWidth/window.innerHeight;
                 this.camera.updateProjectionMatrix();
                 this.renderer.setSize(window.innerWidth, window.innerHeight);
-                this.composer.setSize(window.innerWidth, window.innerHeight);
+                if (this.composer) {
+                    this.composer.setSize(window.innerWidth, window.innerHeight);
+                }
             },
 
             buildDashboard: function() {
@@ -2663,6 +2899,8 @@
             setupInteractions: function() {
                  const m = document.getElementById('info-modal');
                  const tt = document.getElementById('tooltip');
+                 
+                 // Mouse interactions (desktop)
                  window.addEventListener('mousemove', e => {
                      if(m.classList.contains('active')) return;
                      this.mouse.x=(e.clientX/window.innerWidth)*2-1; this.mouse.y=-(e.clientY/window.innerHeight)*2+1;
@@ -2674,6 +2912,39 @@
                          tt.innerText = hits[0].object.userData.title;
                      } else { document.body.style.cursor='default'; tt.style.opacity=0; }
                  });
+                 
+                 // Touch interactions (mobile)
+                 if (isMobile) {
+                     let lastTap = 0;
+                     window.addEventListener('touchend', e => {
+                         const currentTime = new Date().getTime();
+                         const tapLength = currentTime - lastTap;
+                         
+                         // Double tap to interact with objects
+                         if (tapLength < 500 && tapLength > 0) {
+                             if (e.target.closest('#dashboard') || e.target.closest('.modal') || 
+                                 e.target.closest('.top-bar') || e.target.closest('#sidebar')) return;
+                             
+                             const touch = e.changedTouches[0];
+                             this.mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
+                             this.mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
+                             this.raycaster.setFromCamera(this.mouse, this.camera);
+                             const hits = this.raycaster.intersectObjects(this.hitboxes);
+                             
+                             if(hits.length > 0) {
+                                 const d = hits[0].object.userData;
+                                 document.getElementById('info-title').innerText = d.title;
+                                 document.getElementById('info-desc').innerText = d.desc;
+                                 document.getElementById('info-sources').innerHTML='';
+                                 m.classList.add('active');
+                             }
+                             e.preventDefault();
+                         }
+                         lastTap = currentTime;
+                     });
+                 }
+                 
+                 // Click interactions
                  window.addEventListener('click', e => {
                      // Check if clicking close button or modal overlay
                      if(e.target.classList.contains('m-close') || e.target.closest('.m-close')) {
@@ -2704,8 +2975,131 @@
                 if(v==='a') { this.controls.minDistance=2; this.camera.position.set(0,5,0); }
                 if(v==='b') { this.controls.minDistance=0.5; this.camera.position.set(2,1,2); }
             },
+            
+            moveCamera: function(direction) {
+                const step = 1; // Move 1 unit at a time
+                if (direction === 'up') {
+                    this.camera.position.y += step;
+                    this.controls.target.y += step;
+                } else if (direction === 'down') {
+                    this.camera.position.y -= step;
+                    this.controls.target.y -= step;
+                }
+                console.log('[369] Camera Y:', this.camera.position.y, 'Target Y:', this.controls.target.y);
+            },
+            
+            resetCamera: function() {
+                // Reset to default main view
+                this.camera.position.set(0, 2, 16);
+                this.controls.target.set(0, 0, 0);
+                this.controls.minDistance = 5;
+                console.log('[369] Camera reset to default position');
+            },
+            
             prev: function() { this.loadScene((this.currentIdx-1+CHAPTERS.length)%CHAPTERS.length); },
             next: function() { this.loadScene((this.currentIdx+1)%CHAPTERS.length); },
+            
+            toggleSidebar: function() {
+                const sidebar = document.getElementById('sidebar');
+                const icon = document.querySelector('.sidebar-toggle-icon');
+                const text = document.querySelector('.sidebar-toggle-text');
+                
+                sidebar.classList.toggle('minimized');
+                
+                if (sidebar.classList.contains('minimized')) {
+                    icon.textContent = '▲';
+                    text.textContent = 'MENÜ ÖFFNEN';
+                } else {
+                    icon.textContent = '▼';
+                    text.textContent = 'MENÜ';
+                }
+            },
+            
+            initDraggableSidebar: function() {
+                const sidebar = document.getElementById('sidebar');
+                let isDragging = false;
+                let currentX;
+                let currentY;
+                let initialX;
+                let initialY;
+                
+                const dragStart = (e) => {
+                    // Only drag if clicking on toggle button or panel headers
+                    if (e.target.closest('.sidebar-toggle') || e.target.closest('.p-head')) {
+                        initialX = e.clientX - sidebar.offsetLeft;
+                        initialY = e.clientY - sidebar.offsetTop;
+                        isDragging = true;
+                        sidebar.style.transition = 'none';
+                    }
+                };
+                
+                const dragMove = (e) => {
+                    if (isDragging) {
+                        e.preventDefault();
+                        currentX = e.clientX - initialX;
+                        currentY = e.clientY - initialY;
+                        
+                        // Keep within viewport bounds
+                        const maxX = window.innerWidth - sidebar.offsetWidth;
+                        const maxY = window.innerHeight - sidebar.offsetHeight;
+                        
+                        currentX = Math.max(0, Math.min(currentX, maxX));
+                        currentY = Math.max(45, Math.min(currentY, maxY)); // 45px below music player
+                        
+                        sidebar.style.left = currentX + 'px';
+                        sidebar.style.top = currentY + 'px';
+                        sidebar.style.right = 'auto';
+                    }
+                };
+                
+                const dragEnd = () => {
+                    if (isDragging) {
+                        isDragging = false;
+                        sidebar.style.transition = '';
+                    }
+                };
+                
+                sidebar.addEventListener('mousedown', dragStart);
+                document.addEventListener('mousemove', dragMove);
+                document.addEventListener('mouseup', dragEnd);
+                
+                // Touch support for mobile
+                sidebar.addEventListener('touchstart', (e) => {
+                    const touch = e.touches[0];
+                    if (e.target.closest('.sidebar-toggle') || e.target.closest('.p-head')) {
+                        initialX = touch.clientX - sidebar.offsetLeft;
+                        initialY = touch.clientY - sidebar.offsetTop;
+                        isDragging = true;
+                        sidebar.style.transition = 'none';
+                    }
+                });
+                
+                document.addEventListener('touchmove', (e) => {
+                    if (isDragging) {
+                        e.preventDefault();
+                        const touch = e.touches[0];
+                        currentX = touch.clientX - initialX;
+                        currentY = touch.clientY - initialY;
+                        
+                        const maxX = window.innerWidth - sidebar.offsetWidth;
+                        const maxY = window.innerHeight - sidebar.offsetHeight;
+                        
+                        currentX = Math.max(0, Math.min(currentX, maxX));
+                        currentY = Math.max(45, Math.min(currentY, maxY));
+                        
+                        sidebar.style.left = currentX + 'px';
+                        sidebar.style.top = currentY + 'px';
+                        sidebar.style.right = 'auto';
+                    }
+                });
+                
+                document.addEventListener('touchend', () => {
+                    if (isDragging) {
+                        isDragging = false;
+                        sidebar.style.transition = '';
+                    }
+                });
+            },
 
             animate: function() {
                 requestAnimationFrame(() => this.animate());
@@ -2713,7 +3107,13 @@
                 const t = this.clock.getElapsedTime();
                 this.controls.update();
                 this.animatables.forEach(f => f(t));
-                this.composer.render();
+                
+                // Use direct rendering (composer disabled for compatibility)
+                if (this.composer) {
+                    this.composer.render();
+                } else {
+                    this.renderer.render(this.scene, this.camera);
+                }
             }
         };
 
@@ -2724,33 +3124,66 @@
             isMuted: false,
             
             init: function() {
-                // Dropbox direct download link
-                this.audio = new Audio('https://www.dropbox.com/scl/fi/vqkd4gcj8lyo2w11f7w1j/Systemarchitektur-3-6-9-Eine-integrative-Exegese-der-Schnittstellen-zwischen-Gnostischer-Physik-Kabbalistischer-Kybernetik-und-Morphogenetik.mp3?rlkey=0ak4h1qv07m6llsuwvlpp07i8&st=863idj4j&dl=1');
-                this.audio.loop = true;
-                this.audio.volume = 0.7;
-                this.audio.preload = 'auto';
-                
-                // Error handler
-                this.audio.addEventListener('error', (e) => {
-                    console.error('Audio load error:', e);
+                try {
+                    // Dropbox direct download link
+                    this.audio = new Audio('https://www.dropbox.com/scl/fi/vqkd4gcj8lyo2w11f7w1j/Systemarchitektur-3-6-9-Eine-integrative-Exegese-der-Schnittstellen-zwischen-Gnostischer-Physik-Kabbalistischer-Kybernetik-und-Morphogenetik.mp3?rlkey=0ak4h1qv07m6llsuwvlpp07i8&st=863idj4j&dl=1');
+                    this.audio.loop = true;
+                    this.audio.volume = 0.7;
+                    this.audio.preload = 'auto';
+                    
+                    // Error handler
+                    this.audio.addEventListener('error', (e) => {
+                        console.error('Audio load error:', e);
+                        document.getElementById('play-pause-btn').textContent = '✖';
+                        document.getElementById('play-pause-btn').style.color = '#ff3366';
+                        document.getElementById('play-pause-btn').title = 'Audio konnte nicht geladen werden';
+                        // Hide timeline and controls when audio fails
+                        const timeline = document.querySelector('.player-timeline');
+                        const volumeSlider = document.querySelector('.volume-slider');
+                        if (timeline) timeline.style.opacity = '0.3';
+                        if (volumeSlider) volumeSlider.style.opacity = '0.3';
+                    });
+                    
+                    this.audio.addEventListener('loadedmetadata', () => {
+                        console.log('Audio loaded successfully!');
+                        const durationEl = document.getElementById('duration-time');
+                        if (durationEl) {
+                            durationEl.textContent = this.formatTime(this.audio.duration);
+                        }
+                        
+                        // Autoplay after metadata is loaded (with user interaction fallback)
+                        this.play();
+                    });
+                    
+                    this.audio.addEventListener('timeupdate', () => {
+                        if (this.audio.duration) {
+                            const progress = (this.audio.currentTime / this.audio.duration) * 100;
+                            const progressBar = document.getElementById('progress-bar');
+                            const currentTime = document.getElementById('current-time');
+                            if (progressBar) progressBar.style.width = progress + '%';
+                            if (currentTime) currentTime.textContent = this.formatTime(this.audio.currentTime);
+                        }
+                    });
+                    
+                    this.audio.addEventListener('canplaythrough', () => {
+                        console.log('Audio ready to play');
+                    });
+                    
+                    // Handle audio interruption (e.g., phone call on mobile)
+                    this.audio.addEventListener('pause', () => {
+                        if (this.isPlaying && !this.audio.ended) {
+                            console.log('[369] Audio paused externally');
+                            this.isPlaying = false;
+                            const btn = document.getElementById('play-pause-btn');
+                            if (btn) btn.textContent = '▶';
+                        }
+                    });
+                    
+                } catch (err) {
+                    console.error('[369] Music player initialization failed:', err);
                     document.getElementById('play-pause-btn').textContent = '✖';
                     document.getElementById('play-pause-btn').style.color = '#ff3366';
-                });
-                
-                this.audio.addEventListener('loadedmetadata', () => {
-                    console.log('Audio loaded successfully!');
-                    document.getElementById('duration-time').textContent = this.formatTime(this.audio.duration);
-                });
-                
-                this.audio.addEventListener('timeupdate', () => {
-                    const progress = (this.audio.currentTime / this.audio.duration) * 100;
-                    document.getElementById('progress-bar').style.width = progress + '%';
-                    document.getElementById('current-time').textContent = this.formatTime(this.audio.currentTime);
-                });
-                
-                this.audio.addEventListener('canplaythrough', () => {
-                    console.log('Audio ready to play');
-                });
+                }
             },
             
             formatTime: function(seconds) {
@@ -2761,27 +3194,41 @@
             },
             
             play: function() {
+                if (!this.audio) return;
+                
                 const playPromise = this.audio.play();
                 if (playPromise !== undefined) {
                     playPromise.then(() => {
                         this.isPlaying = true;
-                        document.getElementById('play-pause-btn').textContent = '⏸';
+                        const btn = document.getElementById('play-pause-btn');
+                        if (btn) btn.textContent = '⏸';
                         console.log('Audio playing');
                     }).catch(error => {
                         console.error('Play failed:', error);
                         this.isPlaying = false;
-                        document.getElementById('play-pause-btn').textContent = '▶';
+                        const btn = document.getElementById('play-pause-btn');
+                        if (btn) {
+                            btn.textContent = '▶';
+                            // Show tooltip on autoplay failure
+                            if (error.name === 'NotAllowedError') {
+                                btn.title = 'Klicken Sie, um die Musik zu starten';
+                                console.log('[369] Autoplay blocked by browser - user interaction required');
+                            }
+                        }
                     });
                 }
             },
             
             pause: function() {
+                if (!this.audio) return;
                 this.audio.pause();
                 this.isPlaying = false;
-                document.getElementById('play-pause-btn').textContent = '▶';
+                const btn = document.getElementById('play-pause-btn');
+                if (btn) btn.textContent = '▶';
             },
             
             togglePlay: function() {
+                if (!this.audio) return;
                 if (this.isPlaying) {
                     this.pause();
                 } else {
@@ -2790,12 +3237,15 @@
             },
             
             toggleMute: function() {
+                if (!this.audio) return;
                 this.isMuted = !this.isMuted;
                 this.audio.muted = this.isMuted;
-                document.getElementById('mute-btn').textContent = this.isMuted ? '🔇' : '🔊';
+                const btn = document.getElementById('mute-btn');
+                if (btn) btn.textContent = this.isMuted ? '🔇' : '🔊';
             },
             
             seek: function(event) {
+                if (!this.audio || !this.audio.duration) return;
                 const rect = event.currentTarget.getBoundingClientRect();
                 const clickX = event.clientX - rect.left;
                 const percent = clickX / rect.width;
@@ -2803,11 +3253,13 @@
             },
             
             setVolume: function(event) {
+                if (!this.audio) return;
                 const rect = event.currentTarget.getBoundingClientRect();
                 const clickX = event.clientX - rect.left;
                 const percent = Math.max(0, Math.min(1, clickX / rect.width));
                 this.audio.volume = percent;
-                document.getElementById('volume-bar').style.width = (percent * 100) + '%';
+                const volumeBar = document.getElementById('volume-bar');
+                if (volumeBar) volumeBar.style.width = (percent * 100) + '%';
             }
         };
 
@@ -2852,34 +3304,103 @@
         window.app = app;
         window.musicPlayer = musicPlayer;
         
-        // Initialize app
-        try {
-            console.log('[369] Initializing app...');
-            app.init();
-            console.log('[369] App initialized successfully');
-            
-            // Auto-translate
-            try {
-                autoTranslate();
-            } catch (err) {
-                console.warn('[369] Translation failed:', err);
+        // Wait for Three.js to be fully loaded before initializing
+        function checkThreeLoaded() {
+            if (typeof THREE !== 'undefined' && typeof THREE.OrbitControls !== 'undefined') {
+                console.log('[369] THREE and OrbitControls loaded, initializing...');
+                initApp();
+            } else {
+                console.log('[369] Waiting for Three.js... THREE:', typeof THREE, 'OrbitControls:', typeof THREE !== 'undefined' ? typeof THREE.OrbitControls : 'N/A');
+                setTimeout(checkThreeLoaded, 50);
             }
-            
-            // Hide loading screen after short delay
-            setTimeout(() => {
-                hideLoading();
-                console.log('[369] Website fully loaded');
-            }, 1000);
-            
-        } catch (err) {
-            console.error('[369] Initialization failed:', err);
-            showError(`Initialisierung fehlgeschlagen: ${err.message}`);
+        }
+        
+        // Timeout safety - if Three.js doesn't load in 5 seconds, show error
+        setTimeout(() => {
+            if (typeof THREE === 'undefined') {
+                console.error('[369] Three.js failed to load after 5 seconds');
+                showError('3D-Bibliothek konnte nicht geladen werden.<br><br>Mögliche Lösungen:<br>• Seite neu laden (F5)<br>• Cache leeren (Strg+Shift+R)<br>• Anderen Browser verwenden');
+            }
+        }, 5000);
+        
+        function initApp() {
+            try {
+                console.log('[369] Initializing app...');
+                console.log('[369] Three.js version:', THREE.REVISION);
+                console.log('[369] Device:', isMobile ? 'Mobile' : 'Desktop');
+                console.log('[369] Browser:', navigator.userAgent.split(')')[0].split('(')[1] || 'Unknown');
+                
+                app.init();
+                console.log('[369] App initialized successfully');
+                
+                // Auto-translate (skip on mobile for performance)
+                try {
+                    if (!isMobile) {
+                        autoTranslate();
+                    }
+                } catch (err) {
+                    console.warn('[369] Translation failed:', err);
+                }
+                
+                // Hide loading screen
+                setTimeout(() => {
+                    hideLoading();
+                    console.log('[369] Website fully loaded');
+                    
+                    // Log performance metrics
+                    if (window.performance && window.performance.timing) {
+                        const loadTime = window.performance.timing.loadEventEnd - window.performance.timing.navigationStart;
+                        console.log('[369] Load time:', Math.round(loadTime) + 'ms');
+                    }
+                }, 800);
+                
+                // Prevent memory leaks on page unload
+                window.addEventListener('beforeunload', () => {
+                    console.log('[369] Cleaning up resources...');
+                    if (musicPlayer.audio) {
+                        musicPlayer.audio.pause();
+                        musicPlayer.audio.src = '';
+                    }
+                    if (app.renderer) {
+                        app.renderer.dispose();
+                    }
+                    if (app.scene) {
+                        app.scene.traverse((object) => {
+                            if (object.geometry) object.geometry.dispose();
+                            if (object.material) {
+                                if (Array.isArray(object.material)) {
+                                    object.material.forEach(material => material.dispose());
+                                } else {
+                                    object.material.dispose();
+                                }
+                            }
+                        });
+                    }
+                });
+                
+            } catch (err) {
+                console.error('[369] Initialization failed:', err);
+                showError(`Initialisierung fehlgeschlagen: ${err.message}<br><br>Details: ${err.stack || 'Keine Details verfügbar'}<br><br>Browser: ${navigator.userAgent}`);
+            }
+        }
+        
+        // Start checking when DOM is ready
+        console.log('[369] Script loaded, readyState:', document.readyState);
+        if (document.readyState === 'loading') {
+            console.log('[369] Waiting for DOMContentLoaded...');
+            document.addEventListener('DOMContentLoaded', function() {
+                console.log('[369] DOMContentLoaded fired');
+                checkThreeLoaded();
+            });
+        } else {
+            console.log('[369] DOM already loaded, checking Three.js...');
+            checkThreeLoaded();
         }
     </script>
     
     <!-- COPYRIGHT FOOTER -->
     <div style="position: fixed; bottom: 0; left: 0; right: 0; background: rgba(3, 3, 5, 0.95); padding: 8px 20px; text-align: center; font-size: 0.75rem; color: #666; border-top: 1px solid rgba(0, 243, 255, 0.2); z-index: 100;">
-        © 2025 <span style="color: var(--gnosis);">Nicolai Becker</span> | Alle Rechte vorbehalten | <a href="https://linktr.ee/AEiOU.official" target="_blank" style="color: var(--science); text-decoration: none;">AEiOU.official</a>
+        © 2025 <span style="color: var(--gnosis);">Nicolai Becker</span> | Alle Rechte vorbehalten | <a href="https://linktr.ee/AEiOU.official" target="_blank" rel="noopener noreferrer" style="color: var(--science); text-decoration: none;">AEiOU.official</a>
     </div>
 </body>
 </html>
