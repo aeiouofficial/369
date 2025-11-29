@@ -90,6 +90,12 @@
             box-shadow: 0 0 10px var(--science);
         }
 
+        .player-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
         .player-timeline {
             flex: 1;
             max-width: 400px;
@@ -131,48 +137,10 @@
 
         .volume-slider input[type="range"] {
             width: 100%;
-            appearance: none;
-            height: 4px;
-            background: rgba(0, 243, 255, 0.3);
-            border-radius: 4px;
-            outline: none;
-        }
-
-        .volume-slider input[type="range"]::-webkit-slider-thumb {
-            appearance: none;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--science);
-            cursor: pointer;
-            box-shadow: 0 0 6px rgba(0, 243, 255, 0.5);
-        }
-
-        .volume-slider input[type="range"]::-moz-range-thumb {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--science);
-            cursor: pointer;
-            box-shadow: 0 0 6px rgba(0, 243, 255, 0.5);
-        }
-
-        @media (max-width: 768px) {
-            .player-track-title {
-                font-size: 0.6rem;
-                max-width: 100px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            }
-            .player-timeline {
-                max-width: 150px;
-            }
         }
 
         /* Hero Section */
         .hero {
-            position: relative;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -389,6 +357,34 @@
             position: relative;
             overflow: hidden;
         }
+        .chapter-card.locked {
+            opacity: 0.4;
+            filter: grayscale(0.6);
+            cursor: not-allowed;
+            position: relative;
+        }
+        .chapter-card.locked::before {
+            content: '🔒';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.2rem;
+            z-index: 2;
+        }
+        .chapter-card.completed {
+            border-color: rgba(255, 170, 0, 0.6);
+            box-shadow: 0 0 25px rgba(255, 170, 0, 0.2);
+            position: relative;
+        }
+        .chapter-card.completed::before {
+            content: '✓';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.2rem;
+            color: var(--gnosis);
+            z-index: 2;
+        }
 
         .chapter-card::after {
             content: '';
@@ -411,6 +407,11 @@
         .chapter-card:hover::after {
             transform: scaleX(1);
         }
+        .chapter-card.locked:hover {
+            border-color: var(--border);
+            transform: none;
+            box-shadow: none;
+        }
 
         .chapter-id {
             color: #666;
@@ -429,6 +430,59 @@
             font-size: 0.85rem;
             color: #999;
             line-height: 1.5;
+        }
+
+        #profile-panel {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.4);
+        }
+        .profile-title {
+            font-size: 1rem;
+            color: var(--science);
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        .profile-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+        .profile-row input {
+            flex: 1;
+            min-width: 160px;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: #fff;
+            font-family: 'Courier New', monospace;
+        }
+        .profile-row button {
+            padding: 10px 16px;
+            border: 1px solid var(--science);
+            background: transparent;
+            color: var(--science);
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            transition: background 0.2s;
+        }
+        .profile-row button:hover {
+            background: rgba(0, 243, 255, 0.15);
+        }
+        .profile-btn-ghost {
+            border-color: #ff3366 !important;
+            color: #ff3366 !important;
+        }
+        .profile-btn-ghost:hover {
+            background: rgba(255, 51, 102, 0.15);
+        }
+        .profile-hint {
+            font-size: 0.75rem;
+            color: #777;
+            margin-top: 8px;
         }
 
         /* 3D Scene Container */
@@ -523,6 +577,12 @@
             font-size: 1.1rem;
             margin-bottom: 15px;
         }
+        .game-progress {
+            font-size: 0.8rem;
+            color: #bbb;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
 
         .game-options {
             display: flex;
@@ -576,6 +636,62 @@
             background: rgba(255, 0, 0, 0.2);
             border: 1px solid #ff0000;
             color: #ff6666;
+        }
+        .game-feedback .source-link {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 0.85rem;
+        }
+        .game-feedback .source-link a {
+            color: var(--science);
+            text-decoration: underline;
+        }
+
+        /* Game Close Button */
+        .game-close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #888;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .game-close-btn:hover {
+            border-color: #ff3366;
+            color: #ff3366;
+            background: rgba(255, 51, 102, 0.1);
+        }
+
+        /* Game Buttons Container */
+        .game-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: space-between;
+        }
+        .game-buttons .nav-btn {
+            flex: 1;
+        }
+        .skip-btn {
+            border-color: #ff3366;
+            color: #ff3366;
+        }
+        .skip-btn:hover {
+            background: rgba(255, 51, 102, 0.2);
+        }
+        @media (max-width: 480px) {
+            .game-buttons {
+                flex-direction: column;
+            }
         }
 
         /* Navigation Arrows */
@@ -1190,6 +1306,17 @@
                     <span class="stat-label">Fortschritt</span>
                 </div>
             </div>
+
+            <div id="profile-panel">
+                <div class="profile-title" id="profile-title">Fortschrittsschlüssel</div>
+                <div class="profile-row">
+                    <input type="text" id="profile-name" placeholder="Codename" autocomplete="off">
+                    <input type="text" id="profile-seed" placeholder="Seed (z.B. 369)" autocomplete="off">
+                    <button class="profile-btn" id="profile-apply">Profil aktivieren</button>
+                    <button class="profile-btn profile-btn-ghost" id="profile-reset">Reset</button>
+                </div>
+                <p class="profile-hint" id="profile-hint">Fortschritt wird lokal pro Name + Seed gespeichert.</p>
+            </div>
             
             <div class="chapters-grid" id="chapters-grid"></div>
             
@@ -1238,10 +1365,16 @@
 
             <!-- Learning Game Overlay -->
             <div id="game-overlay">
+                <button class="game-close-btn" onclick="toggleGame()" title="Spiel schließen">✕</button>
+                <div class="game-progress" id="game-progress"></div>
                 <div class="game-question" id="game-question"></div>
                 <div class="game-options" id="game-options"></div>
                 <div class="game-feedback" id="game-feedback"></div>
-                <button class="nav-btn" style="margin-top: 15px;" onclick="nextGameQuestion()">WEITER →</button>
+                <div class="game-buttons">
+                    <button class="nav-btn" onclick="toggleGame()">← SCHLIESSEN</button>
+                    <button class="nav-btn skip-btn" id="skip-btn" onclick="skipCurrentQuestion()">⚠️ ÜBERSPRINGEN</button>
+                    <button class="nav-btn" onclick="nextGameQuestion()">WEITER →</button>
+                </div>
             </div>
         </div>
     </div>
@@ -1481,6 +1614,286 @@
             'youtube.com/watch?v=oM37othNNPI': 'Kabbalah & Sacred Systems',
             'youtube.com/watch?v=mTeZD8rsiTs': 'Vortex Math Critique: Number Theory'
         };
+        let AUDIO_TRACKS = {};
+        let QUIZZES = {};
+        const quizProgress = {};
+        let activeQuizQuestion = null;
+        let awaitingNextQuestion = false;
+
+        // Profile & persistence state
+        let currentProfile = { name: '', seed: '' };
+        const chapterUnlocks = {}; // chapterId -> { chapter: bool, audio: bool }
+        let visitedChapters = [];  // chapters the user has viewed for 5+ seconds
+        const STORAGE_PREFIX = '369_profile_';
+
+        // Simple seeded PRNG (mulberry32)
+        function createSeededRandom(seed) {
+            let t = seed >>> 0;
+            return function() {
+                t = Math.imul(t ^ t >>> 15, t | 1);
+                t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+                return ((t ^ t >>> 14) >>> 0) / 4294967296;
+            };
+        }
+
+        function hashString(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = ((hash << 5) - hash) + str.charCodeAt(i);
+                hash |= 0;
+            }
+            return hash;
+        }
+
+        function getProfileKey() {
+            const raw = (currentProfile.name + '::' + currentProfile.seed).toLowerCase().trim();
+            return STORAGE_PREFIX + hashString(raw);
+        }
+
+        function saveProgress() {
+            const key = getProfileKey();
+            const data = {
+                profile: currentProfile,
+                quizProgress: quizProgress,
+                chapterUnlocks: chapterUnlocks,
+                visitedChapters: visitedChapters
+            };
+            try {
+                localStorage.setItem(key, JSON.stringify(data));
+                console.log('[369] Progress saved for', currentProfile.name);
+            } catch (e) {
+                console.warn('[369] Could not save progress:', e);
+            }
+        }
+
+        function loadProgress() {
+            const key = getProfileKey();
+            try {
+                const raw = localStorage.getItem(key);
+                if (!raw) return false;
+                const data = JSON.parse(raw);
+                Object.assign(quizProgress, data.quizProgress || {});
+                Object.assign(chapterUnlocks, data.chapterUnlocks || {});
+                visitedChapters.length = 0;
+                (data.visitedChapters || []).forEach(v => visitedChapters.push(v));
+                console.log('[369] Progress loaded for', currentProfile.name);
+                return true;
+            } catch (e) {
+                console.warn('[369] Could not load progress:', e);
+                return false;
+            }
+        }
+
+        function resetProgress() {
+            Object.keys(quizProgress).forEach(k => delete quizProgress[k]);
+            Object.keys(chapterUnlocks).forEach(k => delete chapterUnlocks[k]);
+            visitedChapters.length = 0;
+            saveProgress();
+        }
+
+        function initUnlocks() {
+            // Chapter 1 is always unlocked
+            if (!chapterUnlocks[1]) chapterUnlocks[1] = { chapter: true, audio: false };
+            CHAPTERS.forEach(ch => {
+                if (!chapterUnlocks[ch.id]) {
+                    chapterUnlocks[ch.id] = { chapter: ch.id === 1, audio: false };
+                }
+            });
+        }
+
+        function isChapterUnlocked(chapterId) {
+            return chapterUnlocks[chapterId]?.chapter === true;
+        }
+
+        function isAudioUnlocked(chapterId) {
+            return chapterUnlocks[chapterId]?.audio === true;
+        }
+
+        function checkAndUnlockNext(chapterId) {
+            const quiz = QUIZZES[chapterId];
+            if (!quiz) return;
+            const progress = getQuizProgress(chapterId);
+            const coreTotal = quiz.core.length;
+            const extraTotal = quiz.extra.length;
+            // Unlock chapter after completing all core questions
+            if (progress.coreIndex >= coreTotal) {
+                if (!chapterUnlocks[chapterId]) chapterUnlocks[chapterId] = {};
+                chapterUnlocks[chapterId].chapter = true;
+                // Unlock next chapter
+                const nextId = chapterId + 1;
+                if (nextId <= CHAPTERS.length) {
+                    if (!chapterUnlocks[nextId]) chapterUnlocks[nextId] = { chapter: false, audio: false };
+                    chapterUnlocks[nextId].chapter = true;
+                }
+            }
+            // Unlock audio after completing all extra questions
+            if (progress.extraIndex >= extraTotal) {
+                if (!chapterUnlocks[chapterId]) chapterUnlocks[chapterId] = {};
+                chapterUnlocks[chapterId].audio = true;
+                unlockAudioForChapter(chapterId);
+            }
+            saveProgress();
+            refreshChapterCards();
+        }
+
+        function buildAudioTracks() {
+            const tracks = {};
+            CHAPTERS.forEach((chapter) => {
+                const pad = String(chapter.id).padStart(2, '0');
+                tracks[chapter.id] = {
+                    title: `Kapitel ${pad} – ${chapter.title}`,
+                    url: `https://audio.613-portal.dev/chapter-${pad}.mp3`
+                };
+            });
+            return tracks;
+        }
+
+        function buildQuizzes(randomFn) {
+            const random = typeof randomFn === 'function' ? randomFn : Math.random;
+            const quizzes = {};
+            const englishChapters = TRANSLATIONS.en.chapters;
+            const chapterIds = CHAPTERS.map(c => c.id);
+            const allSourceIndices = SOURCES.map((_, idx) => idx);
+
+            const shuffleArray = (arr) => {
+                const clone = [...arr];
+                for (let i = clone.length - 1; i > 0; i--) {
+                    const j = Math.floor(random() * (i + 1));
+                    [clone[i], clone[j]] = [clone[j], clone[i]];
+                }
+                return clone;
+            };
+
+            const randomChapters = (excludeId, count) => {
+                const pool = chapterIds.filter(id => id !== excludeId);
+                return shuffleArray(pool).slice(0, count);
+            };
+
+            const randomSources = (exclude = [], count = 3) => {
+                const pool = allSourceIndices.filter(idx => !exclude.includes(idx));
+                if (pool.length < count) {
+                    pool.push(...exclude);
+                }
+                return shuffleArray(pool).slice(0, count);
+            };
+
+            const createOptionSet = (ids, correctId, mapper) => {
+                const shuffled = shuffleArray(ids);
+                const options = shuffled.map(mapper);
+                const correctIndex = shuffled.indexOf(correctId);
+                return { options, correctIndex, order: shuffled };
+            };
+
+            CHAPTERS.forEach((chapter, idx) => {
+                const chapterId = chapter.id;
+                const englishChapter = englishChapters[idx];
+                const srcList = chapter.src && chapter.src.length ? chapter.src : [0];
+                const fallbackSource = srcList[0];
+
+                const createDescQuestion = () => {
+                    const distractors = randomChapters(chapterId, 3);
+                    const optionIds = [chapterId, ...distractors];
+                    const mapperDe = (id) => CHAPTERS[id - 1].title;
+                    const mapperEn = (id) => englishChapters[id - 1].title;
+                    const set = createOptionSet(optionIds, chapterId, mapperDe);
+                    const enOptions = set.order.map(mapperEn);
+                    return {
+                        pool: 'core',
+                        question: {
+                            de: `Welches Kapitel beschreibt folgendes Zitat? "${chapter.desc}"`,
+                            en: `Which chapter matches this description? "${englishChapter.desc}"`
+                        },
+                        options: {
+                            de: set.options,
+                            en: enOptions
+                        },
+                        correct: set.correctIndex,
+                        source: fallbackSource,
+                        explanation: {
+                            de: `Kapitel ${chapterId} – ${chapter.title} fokussiert genau dieses Thema.`,
+                            en: `Chapter ${chapterId} – ${englishChapter.title} focuses on this topic.`
+                        }
+                    };
+                };
+
+                const createIconQuestion = () => {
+                    const distractors = randomChapters(chapterId, 3);
+                    const optionIds = [chapterId, ...distractors];
+                    const mapper = (id) => CHAPTERS[id - 1].icon;
+                    const set = createOptionSet(optionIds, chapterId, mapper);
+                    return {
+                        pool: 'core',
+                        question: {
+                            de: `Welches Symbol repräsentiert Kapitel ${chapterId} – ${chapter.title}?`,
+                            en: `Which symbol represents Chapter ${chapterId} – ${englishChapter.title}?`
+                        },
+                        options: {
+                            de: set.options,
+                            en: set.options
+                        },
+                        correct: set.correctIndex,
+                        source: fallbackSource,
+                        explanation: {
+                            de: `Das Symbol ${chapter.icon} kennzeichnet dieses Kapitel.`,
+                            en: `The icon ${chapter.icon} is bound to this chapter.`
+                        }
+                    };
+                };
+
+                const createSourceQuestion = (sourceIdx, pool = 'core') => {
+                    const sourceUrl = SOURCES[sourceIdx] || SOURCES[fallbackSource];
+                    const sourceTitle = getSourceTitle(sourceUrl);
+                    const distractorSources = randomSources([sourceIdx], 3);
+                    const optionIds = [sourceIdx, ...distractorSources];
+                    const mapper = (idx) => getSourceTitle(SOURCES[idx]);
+                    const set = createOptionSet(optionIds, sourceIdx, mapper);
+                    return {
+                        pool,
+                        question: {
+                            de: `Welche Quelle stützt Kapitel ${chapterId} – ${chapter.title}?`,
+                            en: `Which source supports Chapter ${chapterId} – ${englishChapter.title}?`
+                        },
+                        options: {
+                            de: set.options,
+                            en: set.options
+                        },
+                        correct: set.correctIndex,
+                        source: sourceIdx,
+                        explanation: {
+                            de: `${sourceTitle} dokumentiert diese Inhalte.`,
+                            en: `${sourceTitle} documents this material.`
+                        }
+                    };
+                };
+
+                const coreQuestions = [
+                    createDescQuestion(),
+                    createIconQuestion(),
+                    createSourceQuestion(fallbackSource, 'core')
+                ];
+
+                const extraQuestions = [];
+                for (let i = 0; i < 6; i++) {
+                    const srcIdx = srcList[(i + 1) % srcList.length] ?? fallbackSource;
+                    extraQuestions.push(createSourceQuestion(srcIdx, 'extra'));
+                }
+
+                quizzes[chapterId] = {
+                    audio: AUDIO_TRACKS[chapterId],
+                    core: coreQuestions,
+                    extra: extraQuestions
+                };
+            });
+
+            return quizzes;
+        }
+
+        function initializeQuizData(seedValue) {
+            const rng = seedValue ? createSeededRandom(seedValue) : Math.random;
+            AUDIO_TRACKS = buildAudioTracks();
+            QUIZZES = buildQuizzes(rng);
+            initUnlocks();
+        }
 
         // --- REICHSTEIN GEMATRIA TABLE ---
         const CHAR_VALS = {
@@ -1511,59 +1924,7 @@
             { id: 15, title: "Der Schlüssel", desc: "3-6-9 Code. Das vollständige Human Interface nach Reichstein.", icon: "⚿", src: [0,1,2,4,5,6,7,19,20] }
         ];
 
-        // Learning Games Data
-        const GAMES = {
-            1: [
-                {
-                    question: "Was ist die Frequenz von Ahrimans Gefängnis aus Licht?",
-                    options: ["50 Hz", "60 Hz", "440 Hz", "528 Hz"],
-                    correct: 1,
-                    explanation: "Die 60-Hz-Matrix ist das elektrische Grundrauschen der modernen Zivilisation - ein künstliches Gefängnis."
-                },
-                {
-                    question: "Was repräsentiert die kausale Welt nach Weinreb?",
-                    options: ["Die Tag-Welt der Struktur", "Die Nacht-Welt der Träume", "Die Schöpfung", "Das Nichts"],
-                    correct: 0,
-                    explanation: "Weinreb unterscheidet zwischen der kausalen Tag-Welt (determiniert) und der akausalen Nacht-Welt (frei)."
-                }
-            ],
-            2: [
-                {
-                    question: "Welche Struktur erzeugt den Cavity Structural Effect?",
-                    options: ["Rechteckige Hohlräume", "Sphärische Blasen", "Hexagonale Kavitäten", "Würfelförmige Zellen"],
-                    correct: 2,
-                    explanation: "Grebennikov entdeckte, dass hexagonale Strukturen (wie Bienenwaben) stehende Wellen erzeugen."
-                },
-                {
-                    question: "Was sind die de-Broglie-Wellen?",
-                    options: ["Schallwellen", "Lichtwellen", "Materiewellen", "Gravitationswellen"],
-                    correct: 2,
-                    explanation: "De-Broglie-Wellen sind Materiewellen - jedes Teilchen hat auch Welleneigenschaften."
-                }
-            ],
-            3: [
-                {
-                    question: "Welche Frequenz resoniert in der Königskammer der Pyramide?",
-                    options: ["7.83 Hz", "8.1 Hz", "16.2 Hz", "432 Hz"],
-                    correct: 2,
-                    explanation: "Die Königskammer resoniert bei 16.2 Hz - genau doppelt so hoch wie die Schumann-Resonanz am Standort Gizeh (8.1 Hz)."
-                }
-            ],
-            15: [
-                {
-                    question: "Was repräsentiert die 3 im 3-6-9-Code?",
-                    options: ["Materie", "Gnosis-Kern", "Herz", "Gehirn"],
-                    correct: 1,
-                    explanation: "Die 3 ist der Gnosis-Kern - deine reine, fraktale Seele."
-                },
-                {
-                    question: "Welche Frequenz ist die Bewusstseins-Signatur?",
-                    options: ["432 Hz", "528 Hz", "613 THz", "7.83 Hz"],
-                    correct: 2,
-                    explanation: "613 THz ist die wissenschaftlich nachgewiesene Frequenz in Mikrotubuli, die Anästhetika blockieren."
-                }
-            ]
-        };
+        // Quiz blueprint will be generated dynamically (defined later)
 
         // Language Detection & Translation System
         let currentLanguage = 'de'; // Default German
@@ -1606,6 +1967,7 @@
                     down: "▼ Down",
                     reset: "↺ Reset",
                     next: "NEXT →",
+                    closeGame: "← CLOSE",
                     loading: "LOADING...",
                     chapter: "Chapter",
                     footer: "© 2025 Nicolai Becker | All Rights Reserved",
@@ -1613,6 +1975,11 @@
                     sourcesBtn: "ℹ️ SOURCES",
                     teslaQuote: '"If you understood the magnificence of 3, 6 and 9,<br>you would have a key to the universe" - Nikola Tesla',
                     volume: "Volume",
+                    profileTitle: "Progress Key",
+                    profileHint: "Progress is stored locally per name + seed.",
+                    profileApply: "Activate Profile",
+                    profileReset: "Reset",
+                    skip: "⚠️ SKIP",
                     // Archive modal
                     archiveTitle: "Complete Source Archive",
                     archiveDesc: "All referenced sources (Reichstein, Weinreb, Physics, Kabbalah).",
@@ -1626,7 +1993,15 @@
                     exegesisTitle: "Scientific Exegesis: System Architecture 3-6-9",
                     // Gematria
                     gematriaPlaceholder: "Enter name",
-                    gematriaLabel: "Gematria"
+                    gematriaLabel: "Gematria",
+                    // Stats
+                    chaptersVisited: "Chapters visited",
+                    sourcesCount: "Sources",
+                    progressLabel: "Progress",
+                    // Keyboard hints
+                    keyboardHints: "Navigation | ESC Back | ? Help",
+                    // Toast messages
+                    chapterComplete: "Chapter {n} completed! ({x}/15)"
                 },
                 // Game translations
                 games: {
@@ -1674,6 +2049,33 @@
                         }
                     ]
                 }
+            }
+        };
+
+        const QUIZ_TEXT = {
+            de: {
+                coreLabel: 'KERN',
+                extraLabel: 'EXTRA',
+                skipLabel: '⚠️ ÜBERSPRINGEN',
+                skipConfirm: 'Überspringen zählt als Fehler. Fortfahren?',
+                skipPenalty: 'Übersprungen – zählt als Fehler.',
+                skipBlocked: 'Beantworte zuerst die aktuelle Frage.',
+                quizComplete: 'Quiz abgeschlossen! 🎉',
+                quizCoreComplete: 'Kernfragen abgeschlossen – Extra-Fragen freigeschaltet.',
+                quizAllComplete: 'Alle Fragen gemeistert – Kapitel vollständig.',
+                sourceLink: 'Quelle öffnen'
+            },
+            en: {
+                coreLabel: 'CORE',
+                extraLabel: 'EXTRA',
+                skipLabel: '⚠️ SKIP',
+                skipConfirm: 'Skipping counts as incorrect. Continue?',
+                skipPenalty: 'Skipped — counts as incorrect.',
+                skipBlocked: 'Answer the current question first.',
+                quizComplete: 'Quiz complete! 🎉',
+                quizCoreComplete: 'Core sequence cleared – extra questions unlocked.',
+                quizAllComplete: 'All questions cleared – chapter mastered.',
+                sourceLink: 'Open source'
             }
         };
 
@@ -1750,9 +2152,30 @@
             if (vertBtns[1]) vertBtns[1].textContent = t.ui.down;
             if (vertBtns[2]) vertBtns[2].textContent = t.ui.reset;
             
-            // Game overlay
-            const nextBtn = document.querySelector('#game-overlay .nav-btn');
-            if (nextBtn) nextBtn.textContent = t.ui.next;
+            // Game overlay buttons
+            const gameBtns = document.querySelectorAll('#game-overlay .game-buttons .nav-btn');
+            if (gameBtns[0]) gameBtns[0].textContent = t.ui.closeGame;
+            if (gameBtns[1]) gameBtns[1].textContent = t.ui.skip || (QUIZ_TEXT.en?.skipLabel || '⚠️ SKIP');
+            if (gameBtns[2]) gameBtns[2].textContent = t.ui.next;
+            
+            // Game close button title
+            const gameCloseBtn = document.querySelector('.game-close-btn');
+            if (gameCloseBtn) gameCloseBtn.title = t.ui.closeGame;
+
+            // Profile panel
+            const profileTitle = document.getElementById('profile-title');
+            if (profileTitle && t.ui.profileTitle) profileTitle.textContent = t.ui.profileTitle;
+            const profileHint = document.getElementById('profile-hint');
+            if (profileHint && t.ui.profileHint) profileHint.textContent = t.ui.profileHint;
+            const profileApply = document.getElementById('profile-apply');
+            if (profileApply && t.ui.profileApply) profileApply.textContent = t.ui.profileApply;
+            const profileReset = document.getElementById('profile-reset');
+            if (profileReset && t.ui.profileReset) profileReset.textContent = t.ui.profileReset;
+
+            const activeChapterId = CHAPTERS[currentChapter]?.id;
+            if (activeChapterId && QUIZZES[activeChapterId]) {
+                updateQuizProgressUI(activeChapterId);
+            }
             
             // Footer
             const footerP = document.querySelector('footer p');
@@ -1809,6 +2232,16 @@
             const gematriaLabel = document.querySelector('.scanner-label');
             if (gematriaLabel) gematriaLabel.textContent = t.ui.gematriaLabel;
             
+            // Stats labels
+            const statLabels = document.querySelectorAll('.stat-label');
+            if (statLabels[0]) statLabels[0].textContent = t.ui.chaptersVisited;
+            if (statLabels[1]) statLabels[1].textContent = t.ui.sourcesCount;
+            if (statLabels[2]) statLabels[2].textContent = t.ui.progressLabel;
+            
+            // Keyboard hints
+            const keyboardHints = document.getElementById('keyboard-hints');
+            if (keyboardHints) keyboardHints.innerHTML = `<kbd>←</kbd><kbd>→</kbd> ${t.ui.keyboardHints}`;
+            
             // Rebuild chapter grid with translations
             rebuildChapterGrid();
         }
@@ -1835,7 +2268,8 @@
                 
                 const card = document.createElement('div');
                 card.className = 'chapter-card';
-                card.onclick = () => loadChapter(index);
+                card.dataset.chapter = chapter.id;
+                card.onclick = () => tryEnterScene(index);
                 card.innerHTML = `
                     <div class="chapter-icon">${chapter.icon}</div>
                     <div class="chapter-num">${String(chapter.id).padStart(2, '0')}</div>
@@ -1844,6 +2278,7 @@
                 `;
                 grid.appendChild(card);
             });
+            refreshChapterCards();
         }
 
         // Get translated chapter info
@@ -1858,26 +2293,8 @@
             return chapter;
         }
 
-        // Get translated game data
-        function getGameData(chapterNum) {
-            if (currentLanguage !== 'de' && TRANSLATIONS[currentLanguage]) {
-                const transGames = TRANSLATIONS[currentLanguage].games[chapterNum];
-                if (transGames) {
-                    // Merge with original (keep correct answer index)
-                    return GAMES[chapterNum].map((q, i) => ({
-                        ...q,
-                        question: transGames[i]?.question || q.question,
-                        options: transGames[i]?.options || q.options,
-                        explanation: transGames[i]?.explanation || q.explanation
-                    }));
-                }
-            }
-            return GAMES[chapterNum];
-        }
-
         // State
         let currentChapter = 0;
-        let currentGameQuestion = 0;
         let scene, camera, renderer, controls;
         let audioPlayer = null;
 
@@ -1891,13 +2308,15 @@
 
         // Initialize
         window.onload = async function() {
-            // Detect language first (non-blocking)
             detectLanguage();
-            
+            initializeQuizData();
             initMatrixBg();
             buildChapterGrid();
             initAudioPlayer();
             initSidebarControls();
+            initProfilePanel();
+            refreshChapterCards();
+            updateProgressStats();
         };
 
         // Matrix Background
@@ -2045,6 +2464,7 @@
             }
         ];
         let currentTrackIndex = 0;
+        let audioLocked = false;  // Base playlist is always available
 
         function initAudioPlayer() {
             audioPlayer = new Audio();
@@ -2055,17 +2475,25 @@
             const muteBtn = document.getElementById('mute-btn');
             const timeline = document.getElementById('timeline');
             const progress = document.getElementById('progress');
-            const currentTime = document.getElementById('current-time');
-            const duration = document.getElementById('duration');
+            const currentTimeEl = document.getElementById('current-time');
+            const durationEl = document.getElementById('duration');
             const trackTitle = document.querySelector('.player-track-title');
             const volumeSlider = document.getElementById('volume-slider');
 
+            const updateLockedState = () => {
+                playBtn.disabled = false;  // Base playlist always playable
+                if (PLAYLIST.length > 0) {
+                    trackTitle.textContent = PLAYLIST[currentTrackIndex]?.title || '';
+                }
+            };
+
             const loadTrack = (index, autoplay = false) => {
+                if (PLAYLIST.length === 0) return;
                 currentTrackIndex = index % PLAYLIST.length;
                 const track = PLAYLIST[currentTrackIndex];
                 audioPlayer.src = track.url;
                 trackTitle.textContent = track.title;
-                duration.textContent = '0:00';
+                durationEl.textContent = '0:00';
                 progress.style.width = '0%';
                 if (autoplay) {
                     audioPlayer.play().catch(() => console.log('Autoplay blocked for track', track.title));
@@ -2085,7 +2513,12 @@
                 muteBtn.textContent = audioPlayer.muted || audioPlayer.volume === 0 ? '🔇' : '🔊';
             };
 
-            loadTrack(0, true);
+            // Expose functions for external use
+            window.playerLoadTrack = loadTrack;
+            window.playerUpdateLocked = updateLockedState;
+
+            updateLockedState();
+            loadTrack(0, false);
 
             playBtn.onclick = () => {
                 if (audioPlayer.paused) {
@@ -2118,11 +2551,11 @@
                 if (!audioPlayer.duration) return;
                 const percent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
                 progress.style.width = percent + '%';
-                currentTime.textContent = formatTime(audioPlayer.currentTime);
+                currentTimeEl.textContent = formatTime(audioPlayer.currentTime);
             };
 
             audioPlayer.onloadedmetadata = () => {
-                duration.textContent = formatTime(audioPlayer.duration);
+                durationEl.textContent = formatTime(audioPlayer.duration);
             };
 
             audioPlayer.addEventListener('ended', () => nextTrack(true));
@@ -2132,6 +2565,18 @@
                 volumeSlider.value = audioPlayer.volume;
                 updateMuteButton();
             });
+        }
+
+        function unlockAudioForChapter(chapterId) {
+            const track = AUDIO_TRACKS[chapterId];
+            if (!track) return;
+            // Check if track already exists in playlist
+            const exists = PLAYLIST.some(t => t.url === track.url);
+            if (!exists) {
+                PLAYLIST.unshift({ title: track.title, url: track.url });
+                showToast(currentLanguage === 'en' ? `🎵 New track unlocked: ${track.title}` : `🎵 Neuer Track freigeschaltet: ${track.title}`);
+                if (window.playerLoadTrack) window.playerLoadTrack(0, false);
+            }
         }
 
         function formatTime(seconds) {
@@ -2149,14 +2594,37 @@
                 const chapterLabel = currentLanguage === 'en' ? 'CHAPTER' : 'KAPITEL';
                 const card = document.createElement('div');
                 card.className = 'chapter-card';
+                card.dataset.chapter = chapter.id;
                 card.innerHTML = `
                     <div class="chapter-id">${chapterLabel} ${chapter.id < 10 ? '0' + chapter.id : chapter.id}</div>
                     <div class="chapter-title">${chapter.icon} ${info.title}</div>
                     <div class="chapter-desc">${info.desc}</div>
                 `;
-                card.onclick = () => enterScene(index);
+                card.onclick = () => tryEnterScene(index);
                 grid.appendChild(card);
             });
+        }
+
+        function refreshChapterCards() {
+            document.querySelectorAll('.chapter-card').forEach(card => {
+                const chId = parseInt(card.dataset.chapter, 10);
+                const unlocked = isChapterUnlocked(chId);
+                const audioOk = isAudioUnlocked(chId);
+                card.classList.toggle('locked', !unlocked);
+                card.classList.toggle('completed', unlocked && audioOk);
+            });
+        }
+
+        function tryEnterScene(index) {
+            const chapterId = CHAPTERS[index].id;
+            if (!isChapterUnlocked(chapterId)) {
+                const msg = currentLanguage === 'en'
+                    ? 'This chapter is locked. Complete the previous quiz first.'
+                    : 'Dieses Kapitel ist gesperrt. Beende zuerst das vorherige Quiz.';
+                showToast(msg);
+                return;
+            }
+            enterScene(index);
         }
 
         function initSidebarControls() {
@@ -2256,12 +2724,24 @@
         }
 
         function nextChapter() {
-            currentChapter = (currentChapter + 1) % CHAPTERS.length;
+            let next = (currentChapter + 1) % CHAPTERS.length;
+            const nextId = CHAPTERS[next].id;
+            if (!isChapterUnlocked(nextId)) {
+                showToast(currentLanguage === 'en' ? 'Next chapter locked.' : 'Nächstes Kapitel gesperrt.');
+                return;
+            }
+            currentChapter = next;
             enterScene(currentChapter);
         }
 
         function prevChapter() {
-            currentChapter = (currentChapter - 1 + CHAPTERS.length) % CHAPTERS.length;
+            let prev = (currentChapter - 1 + CHAPTERS.length) % CHAPTERS.length;
+            const prevId = CHAPTERS[prev].id;
+            if (!isChapterUnlocked(prevId)) {
+                showToast(currentLanguage === 'en' ? 'Previous chapter locked.' : 'Vorheriges Kapitel gesperrt.');
+                return;
+            }
+            currentChapter = prev;
             enterScene(currentChapter);
         }
 
@@ -3661,55 +4141,175 @@
 
         // Learning Game
         function loadGame(chapterIndex) {
-            const gameData = GAMES[chapterIndex + 1];
-            if (!gameData) {
-                document.getElementById('game-overlay').style.display = 'none';
+            const chapterId = CHAPTERS[chapterIndex].id;
+            if (!QUIZZES[chapterId]) {
+                document.getElementById('game-overlay').classList.remove('active');
                 return;
             }
-            
-            currentGameQuestion = 0;
-            showGameQuestion();
+            getQuizProgress(chapterId);
+            updateQuizProgressUI(chapterId);
+            activeQuizQuestion = null;
+            awaitingNextQuestion = false;
+            const skipBtn = document.getElementById('skip-btn');
+            const text = getQuizTextPack();
+            if (skipBtn && text) {
+                skipBtn.textContent = text.skipLabel;
+            }
+        }
+
+        function getQuizProgress(chapterId) {
+            if (!quizProgress[chapterId]) {
+                quizProgress[chapterId] = { coreIndex: 0, extraIndex: 0, completedCore: false };
+            }
+            return quizProgress[chapterId];
+        }
+
+        function getQuizTextPack() {
+            return QUIZ_TEXT[currentLanguage] || QUIZ_TEXT.de;
+        }
+
+        function resolveNextQuestion(chapterId) {
+            const quiz = QUIZZES[chapterId];
+            if (!quiz) return null;
+            const progress = getQuizProgress(chapterId);
+            const pool = progress.completedCore ? 'extra' : 'core';
+            const list = quiz[pool];
+            if (!list || list.length === 0) {
+                if (pool === 'core') {
+                    progress.completedCore = true;
+                    return resolveNextQuestion(chapterId);
+                }
+                return null;
+            }
+            const indexKey = pool === 'core' ? 'coreIndex' : 'extraIndex';
+            const idx = progress[indexKey] || 0;
+            if (idx >= list.length) {
+                if (pool === 'core') {
+                    progress.completedCore = true;
+                    return resolveNextQuestion(chapterId);
+                }
+                return null;
+            }
+            return {
+                chapterId,
+                pool,
+                indexKey,
+                list,
+                question: list[idx]
+            };
+        }
+
+        function getLocalizedQuestionText(question) {
+            const lang = currentLanguage === 'en' ? 'en' : 'de';
+            return question.question[lang] || question.question.de;
+        }
+
+        function getLocalizedOptions(question) {
+            const lang = currentLanguage === 'en' ? 'en' : 'de';
+            return question.options[lang] || question.options.de || [];
+        }
+
+        function getLocalizedExplanation(question) {
+            const lang = currentLanguage === 'en' ? 'en' : 'de';
+            return question.explanation[lang] || question.explanation.de;
         }
 
         function showGameQuestion() {
-            const chapterGames = getGameData(currentChapter + 1);
-            if (!chapterGames || currentGameQuestion >= chapterGames.length) {
-                document.getElementById('game-overlay').style.display = 'none';
+            const overlay = document.getElementById('game-overlay');
+            if (!overlay || !overlay.classList.contains('active')) return;
+            const chapterId = CHAPTERS[currentChapter].id;
+            const quiz = QUIZZES[chapterId];
+            if (!quiz) {
+                renderQuizCompleteMessage('quizComplete');
+                return;
+            }
+            const next = resolveNextQuestion(chapterId);
+            if (!next) {
+                const progress = getQuizProgress(chapterId);
+                updateQuizProgressUI(chapterId);
+                renderQuizCompleteMessage(progress.completedCore ? 'quizAllComplete' : 'quizCoreComplete');
+                awaitingNextQuestion = false;
+                activeQuizQuestion = null;
                 return;
             }
 
-            const question = chapterGames[currentGameQuestion];
-            document.getElementById('game-question').textContent = question.question;
-            
-            const optionsDiv = document.getElementById('game-options');
-            optionsDiv.innerHTML = '';
-            
-            question.options.forEach((option, index) => {
-                const btn = document.createElement('div');
-                btn.className = 'game-option';
-                btn.textContent = option;
-                btn.onclick = () => checkAnswer(index, question.correct, question.explanation);
-                optionsDiv.appendChild(btn);
-            });
+            activeQuizQuestion = next;
+            awaitingNextQuestion = false;
 
-            document.getElementById('game-feedback').classList.remove('show', 'correct', 'incorrect');
+            const questionText = getLocalizedQuestionText(next.question);
+            const options = getLocalizedOptions(next.question);
+
+            const questionEl = document.getElementById('game-question');
+            const optionsDiv = document.getElementById('game-options');
+            const feedback = document.getElementById('game-feedback');
+            if (questionEl) questionEl.textContent = questionText;
+            if (optionsDiv) {
+                optionsDiv.innerHTML = '';
+                options.forEach((option, index) => {
+                    const btn = document.createElement('div');
+                    btn.className = 'game-option';
+                    btn.textContent = option;
+                    btn.onclick = () => handleAnswer(index);
+                    optionsDiv.appendChild(btn);
+                });
+            }
+            if (feedback) {
+                feedback.classList.remove('show', 'correct', 'incorrect');
+                feedback.innerHTML = '';
+            }
+            updateQuizProgressUI(chapterId);
         }
 
-        function checkAnswer(selected, correct, explanation) {
-            const options = document.querySelectorAll('.game-option');
-            const feedback = document.getElementById('game-feedback');
-            
-            options.forEach((opt, i) => {
+        function handleAnswer(selectedIndex) {
+            if (!activeQuizQuestion || awaitingNextQuestion) return;
+            const { chapterId, pool, indexKey, list, question } = activeQuizQuestion;
+            const progress = getQuizProgress(chapterId);
+            const correctIndex = question.correct;
+            disableQuizOptions(selectedIndex, correctIndex);
+            const isCorrect = selectedIndex === correctIndex;
+            if (isCorrect) {
+                progress[indexKey] = Math.min(list.length, (progress[indexKey] || 0) + 1);
+                if (pool === 'core' && progress[indexKey] >= list.length) {
+                    progress.completedCore = true;
+                }
+            }
+            awaitingNextQuestion = true;
+            showQuizFeedback(question, isCorrect, false);
+            updateQuizProgressUI(chapterId);
+            checkAndUnlockNext(chapterId);
+        }
+
+        function disableQuizOptions(selected, correct) {
+            document.querySelectorAll('.game-option').forEach((opt, idx) => {
                 opt.onclick = null;
-                if (i === correct) {
+                opt.classList.remove('correct', 'incorrect');
+                if (idx === correct) {
                     opt.classList.add('correct');
-                } else if (i === selected && selected !== correct) {
+                } else if (selected !== null && idx === selected && selected !== correct) {
                     opt.classList.add('incorrect');
                 }
             });
+        }
 
-            feedback.textContent = explanation;
-            feedback.classList.add('show', selected === correct ? 'correct' : 'incorrect');
+        function showQuizFeedback(question, isCorrect, skipped) {
+            const feedback = document.getElementById('game-feedback');
+            if (!feedback) return;
+            const explanation = getLocalizedExplanation(question);
+            const text = getQuizTextPack();
+            const stateClass = isCorrect ? 'correct' : 'incorrect';
+            feedback.classList.remove('correct', 'incorrect', 'show');
+            const sourceLink = buildSourceLink(question.source);
+            const baseText = skipped ? `${text.skipPenalty} ${explanation}` : explanation;
+            feedback.innerHTML = sourceLink ? `${baseText}<div class="source-link">${sourceLink}</div>` : baseText;
+            feedback.classList.add('show', stateClass);
+        }
+
+        function buildSourceLink(sourceIdx) {
+            if (typeof sourceIdx !== 'number') return '';
+            const url = SOURCES[sourceIdx];
+            if (!url) return '';
+            const label = getQuizTextPack().sourceLink;
+            return `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`;
         }
 
         function toggleGame() {
@@ -3721,21 +4321,74 @@
         }
 
         function nextGameQuestion() {
-            currentGameQuestion++;
+            if (!awaitingNextQuestion) {
+                if (!activeQuizQuestion) {
+                    showGameQuestion();
+                    return;
+                }
+                showToast(getQuizTextPack().skipBlocked);
+                return;
+            }
+            awaitingNextQuestion = false;
+            activeQuizQuestion = null;
             showGameQuestion();
+        }
+
+        function skipCurrentQuestion() {
+            if (!activeQuizQuestion || awaitingNextQuestion) {
+                showToast(getQuizTextPack().skipBlocked);
+                return;
+            }
+            if (!confirm(getQuizTextPack().skipConfirm)) return;
+            const { chapterId, indexKey, list } = activeQuizQuestion;
+            const progress = getQuizProgress(chapterId);
+            progress[indexKey] = Math.min(list.length, (progress[indexKey] || 0) + 1);
+            disableQuizOptions(null, activeQuizQuestion.question.correct);
+            awaitingNextQuestion = true;
+            showQuizFeedback(activeQuizQuestion.question, false, true);
+            updateQuizProgressUI(chapterId);
+            checkAndUnlockNext(chapterId);
+        }
+
+        function updateQuizProgressUI(chapterId) {
+            const progressEl = document.getElementById('game-progress');
+            const quiz = QUIZZES[chapterId];
+            if (!progressEl || !quiz) return;
+            const progress = getQuizProgress(chapterId);
+            const text = getQuizTextPack();
+            const coreTotal = quiz.core.length;
+            const extraTotal = quiz.extra.length;
+            const corePart = `${text.coreLabel}: ${Math.min(progress.coreIndex, coreTotal)}/${coreTotal}`;
+            const extraPart = extraTotal > 0 ? ` • ${text.extraLabel}: ${Math.min(progress.extraIndex, extraTotal)}/${extraTotal}` : '';
+            progressEl.textContent = corePart + extraPart;
+        }
+
+        function renderQuizCompleteMessage(messageKey) {
+            const text = getQuizTextPack();
+            const message = text[messageKey] || text.quizComplete;
+            const questionEl = document.getElementById('game-question');
+            const optionsDiv = document.getElementById('game-options');
+            const feedback = document.getElementById('game-feedback');
+            if (questionEl) questionEl.textContent = message;
+            if (optionsDiv) optionsDiv.innerHTML = '';
+            if (feedback) {
+                feedback.classList.remove('correct', 'incorrect');
+                feedback.classList.remove('show');
+                feedback.innerHTML = '';
+            }
         }
 
         // === NEW ENHANCEMENT FUNCTIONS ===
         
-        // Visited chapters tracking (localStorage)
-        let visitedChapters = JSON.parse(localStorage.getItem('visitedChapters') || '[]');
-        
         function markChapterVisited(chapterIndex) {
             if (!visitedChapters.includes(chapterIndex)) {
                 visitedChapters.push(chapterIndex);
-                localStorage.setItem('visitedChapters', JSON.stringify(visitedChapters));
+                saveProgress();
                 updateProgressStats();
-                showToast(`Kapitel ${chapterIndex + 1} abgeschlossen! (${visitedChapters.length}/15)`);
+                const msg = currentLanguage === 'en'
+                    ? `Chapter ${chapterIndex + 1} completed! (${visitedChapters.length}/15)`
+                    : `Kapitel ${chapterIndex + 1} abgeschlossen! (${visitedChapters.length}/15)`;
+                showToast(msg);
             }
         }
         
@@ -3753,12 +4406,7 @@
             if (statProgress) statProgress.textContent = percent + '%';
             if (progressBar) progressBar.style.width = percent + '%';
             
-            // Mark visited cards
-            document.querySelectorAll('.chapter-card').forEach((card, i) => {
-                if (visitedChapters.includes(i)) {
-                    card.classList.add('visited');
-                }
-            });
+            refreshChapterCards();
         }
         
         // Toast notification
@@ -3826,6 +4474,7 @@
             });
             
             // Show keyboard hints on desktop after 5 seconds
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             if (!isMobile) {
                 setTimeout(() => {
                     const hints = document.getElementById('keyboard-hints');
@@ -3840,9 +4489,44 @@
         
         // Initialize keyboard shortcuts
         initKeyboardShortcuts();
-        
-        // Update stats on load
-        setTimeout(updateProgressStats, 500);
+
+        // Profile panel init
+        function initProfilePanel() {
+            const nameInput = document.getElementById('profile-name');
+            const seedInput = document.getElementById('profile-seed');
+            const applyBtn = document.getElementById('profile-apply');
+            const resetBtn = document.getElementById('profile-reset');
+            if (!applyBtn || !resetBtn) return;
+
+            applyBtn.onclick = () => {
+                const name = (nameInput?.value || '').trim();
+                const seed = (seedInput?.value || '').trim();
+                if (!name) {
+                    showToast(currentLanguage === 'en' ? 'Enter a name.' : 'Gib einen Namen ein.');
+                    return;
+                }
+                currentProfile.name = name;
+                currentProfile.seed = seed;
+                const numericSeed = hashString(name + '::' + seed);
+                initializeQuizData(numericSeed);
+                const loaded = loadProgress();
+                if (!loaded) {
+                    initUnlocks();
+                }
+                refreshChapterCards();
+                updateProgressStats();
+                showToast(currentLanguage === 'en' ? `Profile "${name}" activated.` : `Profil "${name}" aktiviert.`);
+            };
+
+            resetBtn.onclick = () => {
+                if (!confirm(currentLanguage === 'en' ? 'Reset all progress for this profile?' : 'Gesamten Fortschritt für dieses Profil zurücksetzen?')) return;
+                resetProgress();
+                initializeQuizData();
+                refreshChapterCards();
+                updateProgressStats();
+                showToast(currentLanguage === 'en' ? 'Progress reset.' : 'Fortschritt zurückgesetzt.');
+            };
+        }
 
         // Utility
         function scrollToDashboard() {
