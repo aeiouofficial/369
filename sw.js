@@ -6,7 +6,7 @@ const AUDIO_CACHE = '369-audio-cache';
 // Assets to cache immediately
 const STATIC_ASSETS = [
     './',
-    './WEBSiTE v2 - 613-portal-v2.html',
+    './index.html',
     './manifest.json',
     'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js',
     'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js'

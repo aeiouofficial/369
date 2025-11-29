@@ -2,7 +2,7 @@
     "name": "613 Portal v2 - Das Geheimnis hinter 369",
     "short_name": "613 Portal",
     "description": "Ein interaktives Portal zu den verborgenen Mustern der Zahlen 3, 6, 9 und ihre Verbindung zur universellen Harmonie.",
-    "start_url": "./WEBSiTE v2 - 613-portal-v2.html",
+    "start_url": "./index.html",
     "display": "standalone",
     "background_color": "#0a0a0a",
     "theme_color": "#00ff88",
@@ -31,21 +31,21 @@
             "name": "Kapitel erkunden",
             "short_name": "Kapitel",
             "description": "Alle 15 Kapitel durchsuchen",
-            "url": "./WEBSiTE v2 - 613-portal-v2.html#chapters",
+            "url": "./index.html#chapters",
             "icons": []
         },
         {
             "name": "Quiz starten",
             "short_name": "Quiz",
             "description": "Das interaktive 369-Quiz spielen",
-            "url": "./WEBSiTE v2 - 613-portal-v2.html#quiz",
+            "url": "./index.html#quiz",
             "icons": []
         },
         {
             "name": "Ton Generator",
             "short_name": "Töne",
             "description": "Solfeggio und Binaural Beats",
-            "url": "./WEBSiTE v2 - 613-portal-v2.html#tones",
+            "url": "./index.html#tones",
             "icons": []
         }
     ],
